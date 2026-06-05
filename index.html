@@ -380,100 +380,117 @@ body {
   .welcome-card { min-width: 0; }
 }
 
-/* ── Tutorial ── */
-#tutorialOverlay {
+/* ── Guided Tour ── */
+#tourOverlay {
   position: fixed; inset: 0; z-index: 99998;
-  background: rgba(15, 23, 42, 0.7);
-  backdrop-filter: blur(4px);
-  display: flex; align-items: center; justify-content: center;
-  padding: 20px;
-  animation: overlayIn 0.3s ease;
+  pointer-events: none;
 }
-@keyframes overlayIn { 0% { opacity: 0; } 100% { opacity: 1; } }
-#tutorialCard {
-  background: var(--card); border-radius: 14px;
-  max-width: 440px; width: 100%;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-  overflow: hidden;
-  animation: cardIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+#tourSpotlight {
+  position: absolute;
+  pointer-events: none;
+  box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.75);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 10px;
+  z-index: 1;
+  backdrop-filter: blur(1px);
 }
-@keyframes cardIn {
-  0% { opacity: 0; transform: translateY(20px) scale(0.96); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
+#tourTarget.active {
+  position: relative;
+  z-index: 100000 !important;
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 8px;
+  animation: tourPulse 2s ease-in-out infinite;
 }
-.tutorial-header {
-  padding: 28px 28px 0;
-  display: flex; justify-content: space-between; align-items: flex-start;
+@keyframes tourPulse {
+  0%, 100% { outline-color: var(--accent); }
+  50% { outline-color: rgba(59, 130, 246, 0.3); }
 }
-.tutorial-icon {
-  width: 48px; height: 48px; border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.6em; flex-shrink: 0;
-  background: var(--accent-soft);
+#tourTooltip {
+  position: fixed; z-index: 100000;
+  pointer-events: auto;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(8px);
+  max-width: 340px;
+  width: calc(100vw - 32px);
 }
-.tutorial-dots {
-  display: flex; gap: 6px;
+#tourTooltip.show {
+  opacity: 1;
+  transform: translateY(0);
 }
-.tutorial-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--unanswered-border); transition: all 0.3s;
+.tour-arrow {
+  position: absolute;
+  width: 12px; height: 12px;
+  background: var(--card);
+  transform: rotate(45deg);
+  z-index: -1;
 }
-.tutorial-dot.active { background: var(--accent); width: 24px; border-radius: 4px; }
-.tutorial-dot.done { background: var(--accent); opacity: 0.4; }
-.tutorial-body { padding: 20px 28px 0; }
-.tutorial-body h3 {
-  font-size: 1.15em; font-weight: 700; color: var(--text);
-  margin-bottom: 8px; line-height: 1.3;
+.tour-arrow.top { top: -5px; left: 50%; margin-left: -6px; }
+.tour-arrow.bottom { bottom: -5px; left: 50%; margin-left: -6px; }
+.tour-arrow.left { left: -5px; top: 50%; margin-top: -6px; }
+.tour-arrow.right { right: -5px; top: 50%; margin-top: -6px; }
+.tour-body {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 20px 24px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+  border: 1px solid var(--accent-border);
 }
-.tutorial-body p {
-  font-size: 0.88em; color: var(--text-secondary);
-  line-height: 1.6; margin: 0;
+.tour-body h4 {
+  font-size: 0.9em; font-weight: 700; color: var(--text);
+  margin: 0 0 6px; line-height: 1.3;
 }
-.tutorial-footer {
-  padding: 20px 28px 24px;
-  display: flex; justify-content: space-between; align-items: center;
-  gap: 12px;
+.tour-body p {
+  font-size: 0.82em; color: var(--text-secondary);
+  margin: 0; line-height: 1.5;
 }
-.tutorial-skip {
-  background: none; border: none; color: var(--text-secondary);
-  font-size: 0.78em; cursor: pointer; padding: 6px 0;
-  transition: color 0.2s;
+.tour-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 14px; padding-top: 12px;
+  border-top: 1px solid var(--unanswered-border);
 }
-.tutorial-skip:hover { color: var(--text); }
-.tutorial-nav {
-  display: flex; gap: 8px;
+.tour-step-indicator {
+  font-size: 0.72em; color: var(--text-secondary);
+  font-weight: 600;
 }
-.tutorial-btn {
-  padding: 9px 20px; border-radius: 8px; font-size: 0.82em;
+.tour-nav { display: flex; gap: 6px; }
+.tour-nav button {
+  padding: 6px 14px; border-radius: 6px; font-size: 0.75em;
   font-weight: 600; cursor: pointer; border: none;
   transition: all 0.2s;
+  pointer-events: auto !important;
 }
-.tutorial-btn-prev {
+.tour-btn-skip {
+  background: transparent; color: var(--text-secondary);
+}
+.tour-btn-skip:hover { color: var(--text); }
+.tour-btn-prev {
   background: var(--bg); color: var(--text-secondary);
   border: 1px solid var(--unanswered-border);
 }
-.tutorial-btn-prev:hover { background: var(--accent-soft); color: var(--accent); border-color: var(--accent-border); }
-.tutorial-btn-next {
+.tour-btn-prev:hover { background: var(--accent-soft); color: var(--accent); border-color: var(--accent-border); }
+.tour-btn-next {
   background: var(--accent); color: white;
 }
-.tutorial-btn-next:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
-.tutorial-btn-start {
-  background: #059669; color: white; padding: 9px 28px;
+.tour-btn-next:hover { background: var(--accent-hover); }
+.tour-btn-finish {
+  background: #059669; color: white;
 }
-.tutorial-btn-start:hover { background: #047857; transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+.tour-btn-finish:hover { background: #047857; }
+
 @media (max-width: 640px) {
-  #tutorialOverlay { padding: 12px; align-items: flex-end; }
-  #tutorialCard { max-width: 100%; border-radius: 14px 14px 0 0; }
-  .tutorial-header { padding: 24px 20px 0; }
-  .tutorial-body { padding: 16px 20px 0; }
-  .tutorial-footer { padding: 16px 20px 20px; }
+  #tourTooltip { left: 16px !important; right: 16px !important; width: auto; max-width: none; }
+  .tour-body { padding: 16px 18px; }
+  #tourSpotlight { display: none; }
+  #tourOverlay { background: rgba(15, 23, 42, 0.6); }
 }
 @media (max-width: 400px) {
-  .tutorial-header { padding: 20px 16px 0; }
-  .tutorial-body { padding: 12px 16px 0; }
-  .tutorial-footer { padding: 14px 16px 18px; flex-direction: column; }
-  .tutorial-nav { width: 100%; }
-  .tutorial-btn { flex: 1; text-align: center; }
+  .tour-body { padding: 14px 16px; }
+  .tour-footer { flex-wrap: wrap; gap: 8px; }
+  .tour-step-indicator { width: 100%; text-align: center; }
+  .tour-nav { width: 100%; justify-content: center; }
+  .tour-nav button { flex: 1; text-align: center; }
 }
 
 /* ── Toast notifications ── */
@@ -667,22 +684,21 @@ body {
 </div>
 <div id="toastContainer"></div>
 
-<div id="tutorialOverlay" class="hidden">
-  <div id="tutorialCard">
-    <div class="tutorial-header">
-      <div class="tutorial-icon" id="tutorialIcon">👋</div>
-      <div class="tutorial-dots" id="tutorialDots"></div>
-    </div>
-    <div class="tutorial-body">
-      <h3 id="tutorialTitle"></h3>
-      <p id="tutorialText"></p>
-    </div>
-    <div class="tutorial-footer">
-      <button class="tutorial-skip" id="tutorialSkip">Omitir tutorial</button>
-      <div class="tutorial-nav">
-        <button class="tutorial-btn tutorial-btn-prev" id="tutorialPrev">← Anterior</button>
-        <button class="tutorial-btn tutorial-btn-next" id="tutorialNext">Siguiente →</button>
-        <button class="tutorial-btn tutorial-btn-start hidden" id="tutorialStart">Comenzar</button>
+<div id="tourOverlay" class="hidden">
+  <div id="tourSpotlight"></div>
+</div>
+<div id="tourTooltip" class="hidden">
+  <div class="tour-arrow"></div>
+  <div class="tour-body">
+    <h4 id="tourTitle"></h4>
+    <p id="tourText"></p>
+    <div class="tour-footer">
+      <span class="tour-step-indicator" id="tourIndicator">1/4</span>
+      <div class="tour-nav">
+        <button class="tour-btn-skip" id="tourSkip">Omitir</button>
+        <button class="tour-btn-prev" id="tourPrev">← Anterior</button>
+        <button class="tour-btn-next" id="tourNext">Siguiente →</button>
+        <button class="tour-btn-finish hidden" id="tourFinish">Comenzar</button>
       </div>
     </div>
   </div>
@@ -1306,54 +1322,167 @@ document.getElementById('btnWelcomePractico').addEventListener('click', function
   toggleVista();
 });
 
-// ── Tutorial ──
-var tutorialSteps = [
-  { icon: '👋', title: 'Bienvenido al Simulacro', text: 'Preparate para el ascenso a Sub-Oficial de 2da. Este simulador tiene 362 preguntas teóricas distribuidas en 11 áreas y 15 factores prácticos situacionales basados en el manual MI-26.' },
-  { icon: '🎯', title: 'Elegí tu modalidad', text: 'Desde la pantalla principal podés comenzar un Simulacro Teoría (examen de 100 preguntas con tiempo límite o repaso por áreas) o ir directo al Factor Práctico con escenarios del Apéndice II.' },
-  { icon: '✏️', title: 'Respondé y aprendé', text: 'Cada pregunta tiene feedback inmediato: marcás una opción y al instante ves si es correcta, junto con la respuesta correcta. Usá las flechas del teclado ← → o los botones para navegar.' },
-  { icon: '📋', title: 'Factor Práctico', text: 'La sección práctica presenta escenarios reales con preguntas de aplicación. Respondé cada una y al final presioná "Corregir Práctico" para ver tu puntaje.' },
-  { icon: '📊', title: 'Resultados y progreso', text: 'Al finalizar el examen teórico obtené un desglose por área con tu porcentaje. En modo examen se requiere 70% para aprobar. ¡Practicá hasta dominar todas las áreas!' }
-];
-var tutorialPaso = 0;
-function mostrarTutorialPaso(paso) {
-  var step = tutorialSteps[paso];
-  document.getElementById('tutorialIcon').textContent = step.icon;
-  document.getElementById('tutorialTitle').textContent = step.title;
-  document.getElementById('tutorialText').textContent = step.text;
-  var dots = document.getElementById('tutorialDots');
-  dots.innerHTML = '';
-  for (var i = 0; i < tutorialSteps.length; i++) {
-    var dot = document.createElement('span');
-    dot.className = 'tutorial-dot';
-    if (i === paso) dot.classList.add('active');
-    else if (i < paso) dot.classList.add('done');
-    dots.appendChild(dot);
+// ── Guided Tour ──
+var tourPasos = [
+  {
+    target: '#welcomeScreen h2',
+    title: 'Bienvenido al Simulacro MI-26',
+    text: 'Este simulador te prepara para el ascenso a Sub-Oficial de 2da. Contiene 362 preguntas teóricas y 15 factores prácticos basados en el manual MI-26.'
+  },
+  {
+    target: '#btnWelcomeTeoria',
+    title: 'Simulacro Teoría',
+    text: 'Elegí esta opción para rendir un examen de 100 preguntas al azar con tiempo límite, o repasar por áreas temáticas sin presión. Requiere 70% para aprobar.'
+  },
+  {
+    target: '#btnWelcomePractico',
+    title: 'Factor Práctico',
+    text: 'Accedé a escenarios situacionales del Apéndice II del manual MI-26. Respondé preguntas de aplicación y corregí al final para ver tu puntaje.'
+  },
+  {
+    target: '.welcome-footer',
+    title: 'Estadísticas del banco',
+    text: 'El simulador cubre 362 preguntas distribuidas en 11 áreas temáticas y 15 escenarios prácticos. ¡Elegí una opción para comenzar!'
   }
-  document.getElementById('tutorialPrev').classList.toggle('hidden', paso === 0);
-  document.getElementById('tutorialNext').classList.toggle('hidden', paso === tutorialSteps.length - 1);
-  document.getElementById('tutorialStart').classList.toggle('hidden', paso !== tutorialSteps.length - 1);
-}
-function iniciarTutorial() {
-  document.getElementById('tutorialOverlay').classList.remove('hidden');
-  tutorialPaso = 0;
-  mostrarTutorialPaso(0);
-}
-function cerrarTutorial() {
-  document.getElementById('tutorialOverlay').classList.add('hidden');
-  localStorage.setItem('simulacro-tutorial-visto', 'true');
-}
-document.getElementById('tutorialSkip').addEventListener('click', cerrarTutorial);
-document.getElementById('tutorialPrev').addEventListener('click', function() {
-  if (tutorialPaso > 0) mostrarTutorialPaso(--tutorialPaso);
-});
-document.getElementById('tutorialNext').addEventListener('click', function() {
-  if (tutorialPaso < tutorialSteps.length - 1) mostrarTutorialPaso(++tutorialPaso);
-});
-document.getElementById('tutorialStart').addEventListener('click', cerrarTutorial);
+];
+var tourPaso = -1;
+var tourActivo = false;
 
-// Show tutorial on first visit
-if (!localStorage.getItem('simulacro-tutorial-visto')) {
-  iniciarTutorial();
+function tourMostrarPaso(paso) {
+  var step = tourPasos[paso];
+  var el = document.querySelector(step.target);
+  if (!el) { tourCerrar(); return; }
+
+  tourPaso = paso;
+
+  // Remove old active class
+  document.querySelectorAll('#tourTarget').forEach(function(e) {
+    e.removeAttribute('id');
+  });
+  el.id = 'tourTarget';
+  el.classList.add('active');
+
+  // Update tooltip content
+  document.getElementById('tourTitle').textContent = step.title;
+  document.getElementById('tourText').textContent = step.text;
+  document.getElementById('tourIndicator').textContent = (paso + 1) + '/' + tourPasos.length;
+
+  // Toggle buttons
+  document.getElementById('tourPrev').classList.toggle('hidden', paso === 0);
+  document.getElementById('tourNext').classList.toggle('hidden', paso === tourPasos.length - 1);
+  document.getElementById('tourFinish').classList.toggle('hidden', paso !== tourPasos.length - 1);
+
+  // Position spotlight and tooltip
+  tourPosicionar(el);
+
+  // Show
+  document.getElementById('tourOverlay').classList.remove('hidden');
+  document.getElementById('tourTooltip').classList.remove('hidden');
+  setTimeout(function() { document.getElementById('tourTooltip').classList.add('show'); }, 50);
+}
+
+function tourPosicionar(el) {
+  var rect = el.getBoundingClientRect();
+  var s = document.getElementById('tourSpotlight');
+  var pad = 16;
+  s.style.left = (rect.left - pad) + 'px';
+  s.style.top = (rect.top - pad) + 'px';
+  s.style.width = (rect.width + pad * 2) + 'px';
+  s.style.height = (rect.height + pad * 2) + 'px';
+
+  var t = document.getElementById('tourTooltip');
+  var arrow = t.querySelector('.tour-arrow');
+  var tipW = 340;
+  var tipH = t.offsetHeight || 220;
+
+  // Determine position: try below first
+  var spaceBelow = window.innerHeight - (rect.bottom + 16);
+  var spaceAbove = rect.top - 16;
+
+  // Center tooltip horizontally relative to target
+  var tipLeft = Math.max(16, Math.min(window.innerWidth - tipW - 16, rect.left + rect.width / 2 - tipW / 2));
+
+  var tipTop;
+  if (spaceBelow >= tipH + 16) {
+    // Below
+    tipTop = rect.bottom + 16;
+    arrow.className = 'tour-arrow top';
+    t.style.left = tipLeft + 'px';
+    t.style.top = tipTop + 'px';
+  } else if (spaceAbove >= tipH + 16) {
+    // Above
+    tipTop = rect.top - tipH - 16;
+    arrow.className = 'tour-arrow bottom';
+    t.style.left = tipLeft + 'px';
+    t.style.top = tipTop + 'px';
+  } else {
+    // Center on screen
+    tipTop = 50;
+    t.style.left = '16px';
+    t.style.right = '16px';
+    t.style.maxWidth = 'none';
+    t.style.width = 'auto';
+    t.style.top = tipTop + '%';
+    arrow.className = 'tour-arrow top';
+    t.style.transform = 'translateY(0)';
+  }
+
+  // Position arrow
+  var arrowCtx = arrow.className;
+  if (arrowCtx === 'tour-arrow top' || arrowCtx === 'tour-arrow bottom') {
+    var arrowLeft = Math.max(20, Math.min(t.offsetWidth - 20, rect.left + rect.width / 2 - tipLeft));
+    arrow.style.left = arrowLeft + 'px';
+    arrow.style.marginLeft = '0';
+  }
+}
+
+function tourIniciar() {
+  if (tourPasos.length === 0) return;
+  tourActivo = true;
+  tourMostrarPaso(0);
+}
+
+function tourCerrar() {
+  tourActivo = false;
+  document.getElementById('tourOverlay').classList.add('hidden');
+  document.getElementById('tourTooltip').classList.add('hidden');
+  document.getElementById('tourTooltip').classList.remove('show');
+  document.querySelectorAll('#tourTarget').forEach(function(e) {
+    e.removeAttribute('id');
+    e.classList.remove('active');
+  });
+  localStorage.setItem('tour-visto', 'true');
+}
+
+// Event listeners
+document.getElementById('tourSkip').addEventListener('click', tourCerrar);
+document.getElementById('tourPrev').addEventListener('click', function() {
+  if (tourPaso > 0) tourMostrarPaso(tourPaso - 1);
+});
+document.getElementById('tourNext').addEventListener('click', function() {
+  if (tourPaso < tourPasos.length - 1) tourMostrarPaso(tourPaso + 1);
+});
+document.getElementById('tourFinish').addEventListener('click', tourCerrar);
+
+// Handle resize
+window.addEventListener('resize', function() {
+  if (tourActivo && tourPaso >= 0) {
+    var el = document.querySelector(tourPasos[tourPaso].target);
+    if (el) tourPosicionar(el);
+  }
+});
+
+// Handle scroll
+window.addEventListener('scroll', function() {
+  if (tourActivo && tourPaso >= 0) {
+    var el = document.querySelector(tourPasos[tourPaso].target);
+    if (el) tourPosicionar(el);
+  }
+});
+
+// Show tour on first visit
+if (!localStorage.getItem('tour-visto')) {
+  tourIniciar();
 }
 
 // ── Toast system ──
