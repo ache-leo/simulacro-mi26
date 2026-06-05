@@ -693,7 +693,7 @@ body {
     <h4 id="tourTitle"></h4>
     <p id="tourText"></p>
     <div class="tour-footer">
-      <span class="tour-step-indicator" id="tourIndicator">1/4</span>
+      <span class="tour-step-indicator" id="tourIndicator">1/6</span>
       <div class="tour-nav">
         <button class="tour-btn-skip" id="tourSkip">Omitir</button>
         <button class="tour-btn-prev" id="tourPrev">← Anterior</button>
@@ -1327,22 +1327,32 @@ var tourPasos = [
   {
     target: '#welcomeScreen h2',
     title: 'Bienvenido al Simulacro MI-26',
-    text: 'Este simulador te prepara para el ascenso a Sub-Oficial de 2da. Contiene 362 preguntas teóricas y 15 factores prácticos basados en el manual MI-26.'
+    text: 'Preparate para el ascenso a Sub-Oficial de 2da. Este simulador tiene 362 preguntas teóricas y 15 factores prácticos basados en el manual MI-26.'
+  },
+  {
+    target: '.mode-switch',
+    title: 'Modos de estudio',
+    text: 'Examen: 100 preguntas al azar con cronómetro de 100 minutos. Mínimo 70% para aprobar. Repaso: sin tiempo, elegís las áreas temáticas que querés practicar.'
+  },
+  {
+    target: '#themeBtn',
+    title: 'Modo oscuro / claro',
+    text: 'Alterná entre tema oscuro y claro con este botón. La preferencia se guarda automáticamente.'
   },
   {
     target: '#btnWelcomeTeoria',
     title: 'Simulacro Teoría',
-    text: 'Elegí esta opción para rendir un examen de 100 preguntas al azar con tiempo límite, o repasar por áreas temáticas sin presión. Requiere 70% para aprobar.'
+    text: 'Cada pregunta tiene feedback inmediato: al marcar una opción ves si es correcta. Al final presioná "Corregir Teoría" para ver tu puntaje detallado por área.'
   },
   {
     target: '#btnWelcomePractico',
     title: 'Factor Práctico',
-    text: 'Accedé a escenarios situacionales del Apéndice II del manual MI-26. Respondé preguntas de aplicación y corregí al final para ver tu puntaje.'
+    text: 'Escenarios situacionales del Apéndice II del manual MI-26. Respondé las preguntas y corregí al final para ver tu puntaje.'
   },
   {
     target: '.welcome-footer',
-    title: 'Estadísticas del banco',
-    text: 'El simulador cubre 362 preguntas distribuidas en 11 áreas temáticas y 15 escenarios prácticos. ¡Elegí una opción para comenzar!'
+    title: 'Todo listo',
+    text: '362 preguntas | 15 prácticos | 11 áreas. Elegí una opción para comenzar. Este tutorial no se volverá a mostrar.'
   }
 ];
 var tourPaso = -1;
