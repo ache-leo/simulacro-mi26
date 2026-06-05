@@ -1284,11 +1284,6 @@ function corregirPracticoVisible() {
 initAccionBotones();
 loadTheme();
 
-// Show tutorial on first visit
-if (!localStorage.getItem('simulacro-tutorial-visto')) {
-  iniciarTutorial();
-}
-
 // ── Welcome screen handlers ──
 function hideWelcome() {
   document.getElementById('welcomeScreen').classList.add('hidden');
@@ -1355,6 +1350,11 @@ document.getElementById('tutorialNext').addEventListener('click', function() {
   if (tutorialPaso < tutorialSteps.length - 1) mostrarTutorialPaso(++tutorialPaso);
 });
 document.getElementById('tutorialStart').addEventListener('click', cerrarTutorial);
+
+// Show tutorial on first visit
+if (!localStorage.getItem('simulacro-tutorial-visto')) {
+  iniciarTutorial();
+}
 
 // ── Toast system ──
 function toast(msg, type) {
