@@ -1,0 +1,1137 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulacro MI-26 — Ascenso S/O 2da</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+:root {
+  --bg: #f1f5f9;
+  --card: #ffffff;
+  --text: #0f172a;
+  --text-secondary: #64748b;
+  --accent: #1d4ed8;
+  --accent-hover: #2563eb;
+  --accent-soft: #eff6ff;
+  --accent-border: #bfdbfe;
+  --correct-bg: #f0fdf4;
+  --correct-border: #22c55e;
+  --correct-text: #15803d;
+  --wrong-bg: #fef2f2;
+  --wrong-border: #ef4444;
+  --wrong-text: #b91c1c;
+  --unanswered-border: #e2e8f0;
+  --unanswered-bg: #f8fafc;
+  --practico-bg: #fffbeb;
+  --practico-border: #f59e0b;
+  --practico-text: #b45309;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-lg: 0 4px 6px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.04);
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+.dark {
+  --bg: #0f172a;
+  --card: #1e293b;
+  --text: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --accent: #60a5fa;
+  --accent-hover: #93c5fd;
+  --accent-soft: #1e3a5f;
+  --accent-border: #1e40af;
+  --correct-bg: #052e16;
+  --correct-border: #22c55e;
+  --correct-text: #4ade80;
+  --wrong-bg: #450a0a;
+  --wrong-border: #ef4444;
+  --wrong-text: #fca5a5;
+  --unanswered-border: #475569;
+  --unanswered-bg: #1e293b;
+  --practico-bg: #422006;
+  --practico-border: #f59e0b;
+  --practico-text: #fbbf24;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
+  --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-lg: 0 4px 6px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.2);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; }
+body {
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding: 12px;
+  transition: background 0.3s, color 0.3s;
+  height: 100vh; height: 100dvh; overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.container {
+  max-width: 780px; margin: 0 auto;
+  display: flex; flex-direction: column;
+  height: 100%; gap: 8px;
+}
+#scrollArea {
+  flex: 1; overflow-y: auto; min-height: 0;
+  scroll-behavior: smooth;
+}
+#scrollArea > div { width: 100%; }
+
+/* Scrollbar */
+#scrollArea::-webkit-scrollbar { width: 5px; }
+#scrollArea::-webkit-scrollbar-track { background: transparent; }
+#scrollArea::-webkit-scrollbar-thumb { background: var(--unanswered-border); border-radius: 3px; }
+#scrollArea::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+@supports not selector(::-webkit-scrollbar) {
+  #scrollArea { scrollbar-width: thin; scrollbar-color: var(--unanswered-border) transparent; }
+}
+
+/* ── Header ── */
+.header {
+  display: flex; justify-content: space-between; align-items: center;
+  background: var(--card); padding: 10px 18px; border-radius: var(--radius);
+  box-shadow: var(--shadow); border: 1px solid var(--unanswered-border);
+}
+.header h1 {
+  color: var(--accent); font-size: 1.05em; font-weight: 700;
+  display: flex; align-items: center; gap: 8px;
+  letter-spacing: -0.01em;
+}
+.header h1 .sub { font-weight: 400; font-size: 0.72em; color: var(--text-secondary); letter-spacing: normal; }
+.header-actions { display: flex; align-items: center; gap: 8px; }
+
+/* ── Mode toggle ── */
+.mode-switch {
+  display: flex; background: var(--bg); border-radius: 8px; padding: 3px;
+  border: 1px solid var(--unanswered-border);
+}
+.mode-btn {
+  padding: 5px 14px; border: none; background: transparent;
+  color: var(--text-secondary); border-radius: 5px; cursor: pointer;
+  font-size: 0.75em; font-weight: 500; transition: all 0.2s;
+}
+.mode-btn.active { background: var(--card); color: var(--accent); box-shadow: var(--shadow-sm); font-weight: 600; }
+
+/* ── Theme ── */
+.theme-toggle {
+  background: var(--bg); border: 1px solid var(--unanswered-border);
+  width: 35px; height: 35px; cursor: pointer; font-size: 1.05em;
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  color: var(--text-secondary); transition: all 0.2s;
+}
+.theme-toggle:hover { background: var(--accent-soft); color: var(--accent); border-color: var(--accent-border); }
+
+/* ── Info bar ── */
+.info-bar {
+  display: flex; align-items: center; gap: 14px;
+  padding: 8px 14px; font-size: 0.78em; color: var(--text-secondary);
+  background: var(--card); border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm); border: 1px solid var(--unanswered-border);
+}
+#answeredInfo { flex: 1; font-weight: 500; }
+#timerDisplay {
+  font-weight: 600; font-family: 'Consolas', 'JetBrains Mono', monospace;
+  padding: 3px 10px; border-radius: 5px; font-size: 0.95em;
+  background: var(--bg); border: 1px solid var(--unanswered-border);
+}
+.timer-ok { color: var(--correct-text); border-color: var(--correct-border) !important; }
+.timer-warn { color: #d97706; border-color: #f59e0b !important; }
+.timer-danger { color: var(--wrong-text); border-color: var(--wrong-border) !important; animation: timerPulse 1s infinite; }
+@keyframes timerPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+#btnPausar {
+  font-size: 0.72em; padding: 4px 10px; cursor: pointer;
+  background: var(--accent); color: white; border: none; border-radius: var(--radius-sm);
+  font-weight: 500; transition: all 0.2s;
+}
+#btnPausar:hover { background: var(--accent-hover); transform: translateY(-1px); }
+
+/* ── Progress ── */
+#progressWrap {
+  display: flex; align-items: center; gap: 10px;
+}
+#progressWrap .progress-track {
+  flex: 1; height: 6px; border-radius: 3px;
+  background: var(--unanswered-border); overflow: hidden;
+}
+#progressWrap .progress-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, #3b82f6, var(--accent));
+  border-radius: 3px; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+#progressText { font-size: 0.72em; color: var(--text-secondary); white-space: nowrap; min-width: 38px; font-weight: 500; }
+
+/* ── Area filter ── */
+.area-filter {
+  padding: 8px 10px; background: var(--card); border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm); border: 1px solid var(--unanswered-border);
+}
+.area-pill {
+  display: inline-block; padding: 3px 11px; margin: 2px; border-radius: 20px;
+  cursor: pointer; font-size: 0.72em; border: 2px solid;
+  color: white; font-weight: 600; transition: all 0.15s;
+  user-select: none;
+}
+.area-pill.active { opacity: 1; box-shadow: 0 0 0 2px var(--accent); }
+.area-pill.inactive { opacity: 0.3; }
+.area-pill:hover { opacity: 0.85; transform: scale(1.04); }
+.area-pill:active { transform: scale(0.96); }
+
+/* ── Question card ── */
+.question {
+  background: var(--card); border-radius: var(--radius); padding: 18px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow);
+  border: 1.5px solid var(--unanswered-border);
+  transition: border-color 0.25s, box-shadow 0.25s, opacity 0.2s;
+}
+.question.correct { border-color: var(--correct-border); box-shadow: 0 0 0 1.5px var(--correct-border), var(--shadow); }
+.question.wrong { border-color: var(--wrong-border); box-shadow: 0 0 0 1.5px var(--wrong-border), var(--shadow); }
+.question.unanswered { border-color: var(--unanswered-border); }
+.q-area {
+  font-size: 0.68em; color: var(--text-secondary); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 2px 9px; border-radius: 5px; color: white;
+  font-size: 0.72em; font-weight: 700; letter-spacing: 0.02em;
+  min-width: 24px;
+}
+.q-text {
+  font-size: 0.92em; line-height: 1.5; margin-bottom: 12px;
+  overflow-wrap: break-word; word-break: break-word;
+  color: var(--text); font-weight: 500;
+}
+.q-opts { display: flex; flex-direction: column; gap: 7px; }
+.q-opts label {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: var(--radius-sm); cursor: pointer;
+  font-size: 0.85em; border: 1.5px solid var(--unanswered-border);
+  transition: all 0.15s; background: var(--unanswered-bg);
+}
+.q-opts label:hover:not(.disabled-label) {
+  background: var(--accent-soft); border-color: var(--accent-border);
+  transform: translateX(2px);
+}
+.q-opts label:active:not(.disabled-label) { transform: translateX(0); }
+.q-opts input { accent-color: var(--accent); flex-shrink: 0; width: 16px; height: 16px; cursor: pointer; }
+.q-opts .disabled-label input { cursor: default; }
+.q-opts .correct-opt {
+  background: var(--correct-bg) !important;
+  border-color: var(--correct-border) !important;
+  color: var(--correct-text);
+  animation: selectPulse 0.3s ease;
+}
+.q-opts .wrong-opt {
+  background: var(--wrong-bg) !important;
+  border-color: var(--wrong-border) !important;
+  color: var(--wrong-text);
+  animation: selectPulse 0.3s ease;
+}
+.q-opts .disabled-label { opacity: 0.7; cursor: default !important; pointer-events: none; }
+@keyframes selectPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+.feedback-inline {
+  font-size: 0.8em; margin-top: 8px; padding: 6px 12px; border-radius: var(--radius-sm);
+  font-weight: 600; line-height: 1.4;
+}
+.feedback-correct {
+  color: var(--correct-text);
+  background: var(--correct-bg);
+  border: 1px solid var(--correct-border);
+}
+.feedback-wrong {
+  color: var(--wrong-text);
+  background: var(--wrong-bg);
+  border: 1px solid var(--wrong-border);
+}
+
+/* ── Question nav ── */
+.q-nav {
+  position: sticky; bottom: 0; z-index: 10;
+  background: var(--card);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0 0; margin-top: 14px;
+  border-top: 1.5px solid var(--unanswered-border);
+}
+.q-nav .nav-btn {
+  padding: 8px 18px; border: 1.5px solid var(--accent);
+  background: transparent; color: var(--accent); border-radius: var(--radius-sm);
+  cursor: pointer; font-size: 0.82em; font-weight: 500;
+  transition: all 0.2s; user-select: none;
+}
+.q-nav .nav-btn:hover:not(:disabled) { background: var(--accent); color: white; transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+.q-nav .nav-btn:active:not(:disabled) { transform: translateY(0); }
+.q-nav .nav-btn:disabled { opacity: 0.35; cursor: default; }
+.q-nav .nav-btn-primary { background: var(--accent); color: white; }
+.q-nav .nav-btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
+.q-nav .nav-counter { font-size: 0.78em; color: var(--text-secondary); font-weight: 500; white-space: nowrap; }
+
+/* ── Actions ── */
+.actions {
+  display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; flex-shrink: 0;
+}
+.btn-primary {
+  background: #059669; color: white; border: none; padding: 9px 20px;
+  border-radius: var(--radius-sm); font-size: 0.8em; font-weight: 600; cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-primary:hover:not(:disabled) { background: #047857; transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+.btn-primary:disabled { opacity: 0.4; cursor: default; pointer-events: none; }
+.btn-secondary {
+  background: transparent; color: var(--text-secondary);
+  border: 1.5px solid var(--unanswered-border);
+  padding: 9px 16px; border-radius: var(--radius-sm); font-size: 0.78em; cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-secondary:hover:not(:disabled) { background: var(--accent-soft); color: var(--accent); border-color: var(--accent-border); }
+.btn-secondary:disabled { opacity: 0.4; cursor: default; pointer-events: none; }
+
+/* ── Outline button ── */
+.btn-outline {
+  background: transparent; color: var(--accent);
+  border: 1.5px solid var(--accent);
+  padding: 9px 16px; border-radius: var(--radius-sm);
+  font-size: 0.78em; font-weight: 500; cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-outline:hover:not(:disabled) { background: var(--accent); color: white; transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+.btn-outline:disabled { opacity: 0.4; cursor: default; pointer-events: none; }
+
+/* ── Practico section ── */
+.practico-section {
+  background: var(--practico-bg);
+  border: 1.5px solid var(--practico-border);
+  border-radius: var(--radius); padding: 16px;
+}
+.practico-section h2 { color: var(--practico-text); font-size: 1.05em; margin-bottom: 6px; font-weight: 700; }
+.practico-section .scenario {
+  background: var(--card); padding: 14px; border-radius: var(--radius-sm);
+  margin: 10px 0; white-space: pre-line; font-size: 0.85em; line-height: 1.5;
+  border: 1px solid var(--unanswered-border);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Result ── */
+.result {
+  text-align: center; padding: 20px; background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  border: 1.5px solid var(--unanswered-border);
+}
+.result h2 { font-size: 1.35em; margin-bottom: 6px; letter-spacing: -0.01em; }
+.result .score { font-size: 2.6em; font-weight: 800; color: var(--accent); letter-spacing: -0.02em; }
+.result .detail { font-size: 0.82em; color: var(--text-secondary); margin-top: 8px; line-height: 1.5; }
+#resultContainer, #resultPracticoContainer { flex-shrink: 0; }
+
+/* ── Toast notifications ── */
+#toastContainer {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+.toast {
+  pointer-events: auto;
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 0.82em;
+  font-weight: 500;
+  color: white;
+  box-shadow: var(--shadow-lg);
+  animation: toastIn 0.3s ease;
+  max-width: 360px;
+  line-height: 1.4;
+}
+.toast-info { background: var(--accent); }
+.toast-success { background: #059669; }
+.toast-warning { background: #d97706; }
+.toast-error { background: #dc2626; }
+.toast-hide { animation: toastOut 0.25s ease forwards; }
+@keyframes toastIn {
+  0% { opacity: 0; transform: translateY(12px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes toastOut {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-8px) scale(0.96); }
+}
+
+/* ── Question fade transition ── */
+@keyframes qFadeIn {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+#questionsContainer > .question {
+  animation: qFadeIn 0.25s ease;
+}
+
+.hidden { display: none !important; }
+
+@media print { .controls, .info-bar, .theme-toggle, #toastContainer { display: none; } }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .container { max-width: 100%; }
+  .header h1 { font-size: 0.95em; }
+  .q-opts label { min-height: 44px; }
+  .area-filter { overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+  .area-pill { font-size: 0.7em; padding: 3px 10px; margin: 2px; }
+}
+@media (max-width: 640px) {
+  body { padding: 8px; }
+  .container { gap: 6px; }
+  .header { padding: 8px 12px; flex-wrap: wrap; gap: 6px; }
+  .header h1 { font-size: 0.85em; }
+  .header h1 .sub { display: none; }
+  .header-actions { gap: 4px; }
+  .mode-btn { padding: 5px 10px; font-size: 0.72em; }
+  .question { padding: 14px; border-radius: 8px; }
+  .q-opts label { font-size: 0.8em; padding: 10px 10px; min-height: 44px; }
+  .q-opts input { width: 18px; height: 18px; min-width: 18px; }
+  .q-nav .nav-btn { padding: 8px 14px; font-size: 0.75em; min-height: 38px; }
+  .q-text { font-size: 0.85em; }
+  .result .score { font-size: 2em; }
+  .info-bar { flex-wrap: wrap; gap: 4px; font-size: 0.72em; padding: 6px 10px; }
+  #answeredInfo { flex: 1; min-width: 120px; }
+  #timerDisplay { font-size: 0.85em; }
+  #btnPausar { padding: 4px 10px; font-size: 0.7em; min-height: 30px; }
+  .actions { gap: 4px; }
+  .btn-primary, .btn-secondary, .btn-outline { text-align: center; flex: 1; min-width: 0; padding: 10px 8px; font-size: 0.74em; }
+  .practico-section { padding: 12px; }
+  .practico-section .scenario { font-size: 0.8em; padding: 10px; word-break: break-word; }
+  .q-area { flex-wrap: wrap; }
+  #toastContainer { bottom: 16px; right: 16px; left: 16px; }
+  .toast { max-width: 100%; font-size: 0.78em; padding: 10px 16px; }
+  .result .detail { font-size: 0.78em; }
+  .result .detail { word-break: break-word; }
+}
+@media (max-width: 400px) {
+  body { padding: 4px; }
+  .header { padding: 6px 8px; gap: 4px; }
+  .header-actions { width: 100%; justify-content: flex-end; }
+  .mode-btn { font-size: 0.65em; padding: 4px 8px; }
+  .theme-toggle { width: 30px; height: 30px; font-size: 1em; }
+  .question { padding: 10px; }
+  .q-nav { flex-wrap: wrap; gap: 4px; justify-content: center; }
+  .q-nav .nav-btn { padding: 6px 10px; font-size: 0.68em; flex: 1; text-align: center; min-height: 36px; }
+  .q-nav .nav-counter { order: -1; width: 100%; text-align: center; font-size: 0.72em; }
+  .q-opts label { font-size: 0.75em; padding: 8px 8px; min-height: 40px; }
+  .q-opts label { gap: 8px; }
+  .info-bar { flex-direction: column; align-items: flex-start; gap: 3px; font-size: 0.68em; }
+  .area-pill { font-size: 0.6em; padding: 2px 7px; margin: 1px; }
+  .btn-primary, .btn-secondary, .btn-outline { font-size: 0.68em; padding: 8px 6px; }
+  .result .score { font-size: 1.6em; }
+  .result h2 { font-size: 1.1em; }
+  .practico-section h2 { font-size: 0.95em; }
+}
+@media (max-width: 400px) {
+  body { padding: 4px; }
+  .header { padding: 6px 8px; }
+  .header-actions { width: 100%; justify-content: flex-end; }
+  .mode-btn { font-size: 0.68em; padding: 4px 8px; }
+  .question { padding: 10px; }
+  .q-nav { flex-wrap: wrap; gap: 6px; justify-content: center; }
+  .q-nav .nav-btn { padding: 6px 12px; font-size: 0.7em; flex: 1; text-align: center; }
+  .q-nav .nav-counter { order: -1; width: 100%; text-align: center; }
+  .q-opts label { font-size: 0.75em; padding: 6px 8px; min-height: 38px; }
+  .info-bar { flex-direction: column; align-items: flex-start; gap: 3px; font-size: 0.68em; }
+  .area-pill { font-size: 0.65em; padding: 2px 8px; }
+}
+</style>
+</head>
+<body>
+<div class="container" id="app">
+  <div class="header">
+    <h1>Simulacro MI-26 <span class="sub">Ascenso S/O 2da</span></h1>
+    <div class="header-actions">
+      <div class="mode-switch">
+        <button id="btnModoExamen" class="mode-btn active">Examen</button>
+        <button id="btnModoRepaso" class="mode-btn">Repaso</button>
+      </div>
+      <button class="theme-toggle" id="themeBtn" title="Tema">☀</button>
+    </div>
+  </div>
+
+  <div class="info-bar" id="infoBar">
+    <span id="countInfo">Cargando...</span>
+    <span id="answeredInfo">0 respondidas / 0 acertadas</span>
+    <span id="timerDisplay" class="hidden"></span>
+    <button id="btnPausar" class="hidden">Pausar</button>
+  </div>
+
+  <div id="progressWrap" class="hidden">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <span id="progressText">0/0</span>
+  </div>
+
+  <div id="areaFilter" class="area-filter hidden">
+    <div id="areaPills"></div>
+  </div>
+
+  <div id="scrollArea">
+    <div id="questionsContainer"></div>
+    <div id="practicoContainer"></div>
+  </div>
+  <div id="resultContainer" class="hidden"></div>
+  <div id="resultPracticoContainer" class="hidden"></div>
+
+  <div class="actions" id="actionButtons" style="position:relative;">
+    <button id="btnIniciar" class="btn-secondary">+ Nuevo Intento</button>
+    <button id="btnCorregir" class="btn-primary">Corregir Teoría</button>
+    <button id="btnCorregirPractico" class="btn-outline" style="border-color:var(--practico-border);color:var(--practico-border);">Corregir Práctico</button>
+    <button id="btnToggleVista" class="btn-outline">📋 Práctico</button>
+    <div id="accionesOverlay" class="hidden" style="position:absolute;inset:0;z-index:999;background:transparent;border-radius:6px;"></div>
+    <button id="btnCancelar" class="btn-secondary hidden" style="position:relative;z-index:1000;">Suspender</button>
+  </div>
+</div>
+<div id="toastContainer"></div>
+<script>
+
+const ALL_QUESTIONS = [{"area":"C","text":"Según el Art. 14 del CPM, el error de derecho constituye excusa válida:","opts":["Tratándose de los reclutas, mientras no hayan vencido el periodo de instrucción","Para todos los militares que reciban una orden delictiva","Solo para los delitos previstos en el Art. 59"],"correct":0},{"area":"C","text":"¿Qué artículo del CPM define qué se consideran delitos militares?","opts":["Art. 14","Art. 59","Art. 33"],"correct":1},{"area":"C","text":"Según el Art. 17 del CPM, cuando un militar ejecuta un delito en acto de servicio por orden superior:","opts":["Se presume que concurren las circunstancias del Art. 29 del Código Penal Ordinario","Queda exento de toda responsabilidad sin más trámite","Debe negarse a cumplir la orden y dar parte"],"correct":0},{"area":"C","text":"El principio \u0027non bis in ídem\u0027 significa que nadie puede:","opts":["Ser juzgado sin pruebas","Ser sancionado dos veces por el mismo hecho","Apelar una condena"],"correct":1},{"area":"C","text":"Según el Art. 33 del CPM, ¿cuál de las siguientes NO es una circunstancia que elimina el delito, impide el castigo o lo hace cesar?","opts":["Legítima defensa","Obediencia debida a un superior","Estado de necesidad"],"correct":1},{"area":"C","text":"Según el Art. 26 del Reglamento de Disciplina, las penas para el Cuerpo de Equipaje son:","opts":["Apercibimiento, Arresto Simple, Arresto Riguroso, Suspensión de cargo o destino, Privación de cargo o destino y Privación de grado","Amonestación, Arresto Simple y Sala de Disciplina","Apercibimiento y Arresto Simple únicamente"],"correct":0},{"area":"C","text":"Las penas disciplinarias para Sub-Oficiales incluyen:","opts":["Apercibimiento, Arresto Simple y Arresto Riguroso","Suspensión de cargo o destino y Privación de grado","Todas las anteriores son penas aplicables a Sub-Oficiales"],"correct":2},{"area":"C","text":"Según el Art. 39 del Reglamento de Disciplina, cuando por enfermedad se interrumpiese el cumplimiento de una pena disciplinaria:","opts":["La pena se extingue automáticamente","La pena continúa desde el día que el paciente recobre la salud","La pena se reinicia desde el principio"],"correct":1},{"area":"C","text":"Según el Art. 52, el Sub-Oficial que aplique una pena disciplinaria a un subalterno del Cuerpo de Equipaje:","opts":["La comunicará verbalmente al 2º Comandante","Dará cuenta al superior inmediato y a la guardia","La asentará en el libro de castigos"],"correct":1},{"area":"C","text":"Según el Art. 86 del Reglamento de Disciplina, los reclamos colectivos:","opts":["Están permitidos si tienen una misma causa","Están terminantemente prohibidos aún en el caso de ser una misma causa las que los motive","Deben presentarse por escrito ante el Comandante"],"correct":1},{"area":"C","text":"Según el Art. 91 del Reglamento de Disciplina, el plazo para apelar es de:","opts":["24 horas","Tres días","Siete días"],"correct":1},{"area":"C","text":"Según ROFUEMA Art. 20, la organización de la guardia en tiempo de paz cede su lugar en importancia solamente:","opts":["A la organización administrativa","A la organización sobre el combate","Al plan de contingencia"],"correct":1},{"area":"C","text":"Según ROFUEMA Art. 21, la consideración primaria para desarrollar una efectiva organización de la guardia es:","opts":["La antigüedad y experiencia del personal","Los requerimientos operacionales","El presupuesto disponible"],"correct":1},{"area":"C","text":"Según RSAB Art. 872, el buque se organiza en guardias porque:","opts":["Así lo exige la tradición naval","El gobierno del navío, el mantenimiento del orden, la dirección del servicio interno y la seguridad del buque exigen un servicio de constante vigilancia","Es un requisito administrativo del Manual Orgánico"],"correct":1},{"area":"C","text":"Según RSAB Art. 1050, los Sub-Oficiales se turnan en el servicio de guardias:","opts":["Solo en puerto","Solo en el mar","Tanto en puerto como en el mar; solo podrán ser exceptuados los Sub-Oficiales de cargo si el Comandante lo estima conveniente"],"correct":2},{"area":"C","text":"El S/O de guardia también recibe el nombre de:","opts":["Sub-Oficial de servicio","Sub-Oficial de Policía","Sub-Oficial de armas"],"correct":1},{"area":"C","text":"Según el Art. 1054 del RSAB, si individuos de la tripulación de mayor grado que el S/O incurrieran en faltas:","opts":["El S/O les aplica la sanción directamente","El S/O le hará presente su consigna de velar sobre la disciplina y si no atendiera dará cuenta al Guardia Marina de guardia","El S/O ignora la falta por ser de personal de mayor grado"],"correct":1},{"area":"C","text":"Según el Art. 1064, ¿cuál de los siguientes NO es un artículo cuya introducción a bordo debe vigilar el S/O?","opts":["Bebidas alcohólicas y materias explosivas","Naipes u otros para juegos de azar","Libros de texto de instrucción"],"correct":2},{"area":"C","text":"Según el Art. 1072 del RSAB, ¿cuántos minutos antes de la diana se levanta el S/O de guardia?","opts":["5 minutos","10 minutos","15 minutos"],"correct":2},{"area":"C","text":"Según el Art. 1218 del RSAB, el Sub-Oficial y el Cabo de facción son responsables:","opts":["Ante el Comandante","Ante el Oficial de Guardia","Ante el Segundo Comandante"],"correct":1},{"area":"C","text":"Según el Art. 1222 del RSAB, el S/O y el Cabo de guardia estarán impuestos de:","opts":["Solo del movimiento de presos","Movimiento de presos, embarcaciones, gente fuera del buque, comisiones, santabárbaras y pañoles de munición abiertos y embarcaciones al costado","Solo de las embarcaciones al costado"],"correct":1},{"area":"C","text":"Según el Art. 1079 del RSAB, si no hubiera Guardia Marina, ¿quién lo reemplaza para las rondas internas de la noche?","opts":["El Cabo de Guardia","El Sub-Oficial de guardia","El Contramaestre"],"correct":1},{"area":"E","text":"¿Qué se entiende por \"Actividad Naval\"?","opts":["Cualquier unidad terrestre de la Armada Nacional con identidad definida bajo un oficial en Comando o a Cargo","Solo los buques de la Armada","Las maniobras navales en el mar"],"correct":0},{"area":"E","text":"¿Qué es Seguridad Física?","opts":["Medidas para proteger personal, material e información contra espionaje, sabotaje y hurto","El armamento y equipamiento de la guardia","Solo el control de accesos perimetrales"],"correct":0},{"area":"E","text":"¿Cuál NO es una categoría de barrera de seguridad física?","opts":["Barreras naturales","Barreras legales","Barreras estructurales"],"correct":1},{"area":"E","text":"Las barreras electrónicas o alarmas sirven para:","opts":["Detectar la presencia de un intruso","Detener físicamente al intruso","Reemplazar completamente a los guardias"],"correct":0},{"area":"E","text":"La seguridad física se aplica en profundidad mediante:","opts":["Un solo anillo de protección","Capas concéntricas o anillos de seguridad","Solo barreras electrónicas perimetrales"],"correct":1},{"area":"E","text":"Ventaja de la cerca de malla eslabonada:","opts":["Buena visibilidad y difícil de escalar","Bajo costo de instalación","No requiere mantenimiento"],"correct":0},{"area":"E","text":"Desventaja del muro de hormigón como cerca:","opts":["Bloquea la visión perimetral","Baja seguridad","Es fácil de escalar"],"correct":0},{"area":"E","text":"La Fuerza de Seguridad es:","opts":["Un término equivalente al de guardia militar, es el elemento individual más importante del sistema de guardia","Una fuerza rotativa y orgánica de la unidad","Una fuerza voluntaria y temporal"],"correct":0},{"area":"E","text":"¿Cómo se denomina la guardia que cumple funciones de policía interna en una actividad?","opts":["Fuerza de Guardia","Fuerza Permanente","Fuerza Contratada"],"correct":0},{"area":"E","text":"En el control de accesos, los visitantes deben:","opts":["Ser escoltados por personal autorizado","Entrar sin identificación si son conocidos","Firmar solo al salir de la instalación"],"correct":0},{"area":"E","text":"En el control vehicular debe registrarse:","opts":["Matrícula, conductor, hora de entrada, motivo de visita","Solo la matrícula del vehículo","Solo el motivo de la visita"],"correct":0},{"area":"E","text":"¿Cuál NO es un tipo de extintor mencionado en el manual?","opts":["Agua","CO2","Halón"],"correct":2},{"area":"E","text":"El CCTV en seguridad física sirve para:","opts":["Monitoreo y grabación de áreas protegidas","Solo grabar eventos","Reemplazar completamente a los guardias"],"correct":0},{"area":"E","text":"¿Cuál NO es considerada un área vital contra sabotaje?","opts":["Santabárbara (pañol de municiones)","Cocina","Máquinas"],"correct":1},{"area":"E","text":"Ante disturbios, la primera medida a tomar es:","opts":["Asegurar puertas y accesos","Confrontar directamente a los involucrados","Abandonar el buque"],"correct":0},{"area":"E","text":"Para dar órdenes generales de emergencia se usa:","opts":["El telégrafo o megáfono","Radio VHF","Intercomunicador interno"],"correct":0},{"area":"E","text":"Las barreras naturales incluyen:","opts":["Ríos, montañas y accidentes geográficos","Cercas electrificadas","Sensores electrónicos"],"correct":0},{"area":"E","text":"¿Cuántos anillos de seguridad se consideran en la seguridad en profundidad?","opts":["2 anillos","3 anillos","4 anillos"],"correct":1},{"area":"E","text":"Un guardia armado es una barrera:","opts":["Humana","Natural","Estructural"],"correct":0},{"area":"E","text":"Una alarma perimetral es una barrera:","opts":["Electrónica","Natural","Estructural"],"correct":0},{"area":"E","text":"Medida de prevención de incendios:","opts":["Mantener extintores accesibles","Acumular materiales combustibles","Usar agua en incendios eléctricos"],"correct":0},{"area":"E","text":"Comunicación instantánea entre puestos de guardia:","opts":["Radio VHF/UHF","Radio AM","Radio de onda corta"],"correct":0},{"area":"F","text":"¿Quién tiene la responsabilidad final del rol de guardias?","opts":["El Oficial de División","El S/O de guardia","El Cabo de Guardia"],"correct":0},{"area":"F","text":"¿En cuántas secciones se divide la división para el rol?","opts":["3 secciones","2 secciones","4 secciones"],"correct":0},{"area":"F","text":"¿Qué se asienta en tinta al confeccionar el rol?","opts":["Nº de puesto, jerarquía y especialidad","Los nombres del personal","Las observaciones"],"correct":0},{"area":"F","text":"¿Qué se asienta en lápiz al confeccionar el rol?","opts":["Los nombres y jerarquías actuales del personal","Nº de puesto","Especialidad"],"correct":0},{"area":"F","text":"Si sobran hombres al confeccionar el rol, se notifica a:","opts":["El Oficial de Armas","El Comandante","El Oficial de Guardia"],"correct":0},{"area":"F","text":"Si faltan hombres al confeccionar el rol, se asigna primero:","opts":["Las estaciones más vitales","Los más antiguos","Los de menor rango"],"correct":0},{"area":"F","text":"Al asignar tareas pesadas debe considerarse:","opts":["Las capacidades físicas del personal","La antigüedad","La especialidad"],"correct":0},{"area":"F","text":"El rol se fundamenta en:","opts":["El Manual Orgánico y el Manual de Combate","Solo el Manual de Combate","Solo el Manual Orgánico"],"correct":0},{"area":"J","text":"Al ascender a S/O, las prendas viejas se:","opts":["Desechan o se entregan según lo establecido","Conservan para uso diario","Venden al personal"],"correct":0},{"area":"J","text":"El marcado de prendas se rige por:","opts":["Lo dispuesto en el Reglamento de Uniformes","La costumbre del buque","La decisión del Comandante"],"correct":0},{"area":"J","text":"El vestuario está en la Planilla Especial Nº:","opts":["Planilla Especial Nº 1","Planilla Especial Nº 2","Planilla Especial Nº 3"],"correct":0},{"area":"J","text":"Vigila el uso correcto del uniforme:","opts":["El Sub-Oficial de guardia","El Cabo de Guardia","El Oficial de División"],"correct":0},{"area":"J","text":"Las alteraciones al uniforme reglamentario están:","opts":["Prohibidas","Permitidas con autorización","Permitidas solo en puerto"],"correct":0},{"area":"K","text":"¿Cuál NO es requisito para cualificar para ascenso?","opts":["Tener una recomendación especial del Comandante","Factores prácticos aprobados","Aprobar el examen de ascenso"],"correct":0},{"area":"K","text":"Los factores prácticos aprobados se asientan en:","opts":["La Guía Funcional del S/O","El parte de novedades","La hoja de servicios"],"correct":0},{"area":"K","text":"Los factores del Apéndice I son:","opts":["Prácticos de ascenso que debe cumplir el S/O","Normas disciplinarias","Requerimientos físicos"],"correct":0},{"area":"K","text":"Orden recomendado de estudio:","opts":["De lo general a lo particular","De lo particular a lo general","Según el orden del manual"],"correct":0},{"area":"K","text":"¿Cuál es un puesto del S/O 2da a bordo?","opts":["Ayudante de División","Cabo de Guardia","Oficial de Guardia"],"correct":0},{"area":"K","text":"¿Cuál es un puesto del S/O 2da en tierra?","opts":["Integrante de la Fuerza de Seguridad","Oficial de Cuartel","Cabo de Servicio"],"correct":0},{"area":"K","text":"El método de estudio incluye:","opts":["Lectura, análisis y práctica","Solo lectura del manual","Solo práctica supervisada"],"correct":0},{"area":"K","text":"Hay que cualificar para:","opts":["El ascenso al grado superior","Mantenerse en el grado","Recibir condecoraciones"],"correct":0},{"area":"R","text":"¿Cuántos roles operativos estándar tiene el Manual Orgánico?","opts":["Tiene los establecidos en el Manual Orgánico de cada unidad","2 roles","4 roles"],"correct":0},{"area":"R","text":"El Rol Especial de Navegación se usa para:","opts":["Situaciones de navegación que requieren personal adicional","Abastecimiento en puerto","Búsqueda de intrusos"],"correct":0},{"area":"R","text":"El Rol de Reabastecimiento se usa para:","opts":["Operaciones de reaprovisionamiento en el mar","Relevo de guardias","Abandono del buque"],"correct":0},{"area":"R","text":"El Rol de Búsqueda en el Buque sirve para:","opts":["Localizar intrusos o personal desaparecido a bordo","Navegación en aguas restringidas","Control de averías"],"correct":0},{"area":"R","text":"El Rol de Buque Silencioso se usa para:","opts":["Reducir el ruido del buque en situaciones tácticas","Navegación nocturna","Mantenimiento de rutina"],"correct":0},{"area":"R","text":"El S/O de División reporta a:","opts":["El Oficial de División","El Comandante","El Segundo Comandante"],"correct":0},{"area":"R","text":"¿Cuál NO es deber del S/O de División?","opts":["Impartir justicia militar","Instruir a su personal","Controlar la disciplina"],"correct":0},{"area":"R","text":"El análisis de puesto es un estudio:","opts":["Sistemático de las tareas y responsabilidades de un puesto","De la remuneración del personal","De la antigüedad en el grado"],"correct":0},{"area":"R","text":"¿Cuántos tipos de análisis de puesto hay?","opts":["Orgánico, Funcional y de Tareas","Solo orgánico","Solo funcional"],"correct":0},{"area":"R","text":"El análisis orgánico estudia:","opts":["La estructura y organización del puesto en la unidad","Las funciones específicas del puesto","Las tareas diarias del puesto"],"correct":0},{"area":"R","text":"El Programa de Análisis de Trabajo Naval tiene:","opts":["Un formulario específico (PATN) para relevar datos del puesto","Solo una lista de verificación","Un cuestionario genérico"],"correct":0},{"area":"R","text":"¿Cuál NO es método de obtención de información en análisis de puestos?","opts":["Suposición del analista","Entrevista","Observación directa"],"correct":0},{"area":"V","text":"Según el RSAB, el Sub-Oficial de guardia es responsable directo ante:","opts":["El Oficial de guardia","El Comandante","El Segundo Comandante"],"correct":0},{"area":"V","text":"Del Sub-Oficial de guardia depende directamente:","opts":["El Cabo de guardia","El Guardia Marina","El Contramaestre"],"correct":0},{"area":"V","text":"Al recibir la guardia, el S/O entrante recibe del saliente:","opts":["Relación nominal del personal ausente, lista de enfermos, castigados, tenida del día y órdenes especiales","Solo las llaves de los pañoles","Solo el armamento de la guardia"],"correct":0},{"area":"V","text":"El S/O de guardia realiza rondas:","opts":["Diurnas y nocturnas si lo dispusiere el Oficial de guardia","Solo nocturnas","Solo diurnas"],"correct":0},{"area":"V","text":"Si un guardia no sabe sus obligaciones, el S/O debe:","opts":["Enseñárselas en caso de ignorancia","Reportarlo al Oficial de guardia","Castigarlo inmediatamente"],"correct":0},{"area":"V","text":"El S/O de guardia supervisa:","opts":["El servicio de la guardia militar","Solo los arrestados","Solo el portalón"],"correct":0},{"area":"V","text":"El S/O de guardia controla:","opts":["El Borrador de Novedades y la lista de guardia","Solo el armamento","Solo los permisos"],"correct":0},{"area":"V","text":"¿Puede el S/O de guardia intervenir en áreas de departamentos en horas laborales?","opts":["No, sus funciones se centran en áreas donde el personal normalmente no trabaja","Sí, tiene autoridad absoluta","Sí, pero solo si hay una emergencia"],"correct":0},{"area":"V","text":"Al toque de silencio, el S/O:","opts":["Pasa una ronda por el interior del buque","Se retira a descansar","Entrega la guardia"],"correct":0},{"area":"V","text":"Con los castigados (Art. 1069), los forma y:","opts":["Les pasa lista, dando cuenta al Guardia Marina de guardia o al Comandante de la guardia","Los envía a la enfermería","Los libera inmediatamente"],"correct":0},{"area":"X","text":"Una directiva militar es una comunicación que:","opts":["Transmite órdenes, instrucciones o información","Solo informa novedades","Solo registra históricos"],"correct":0},{"area":"X","text":"¿Cuántos tipos de directivas operativas hay?","opts":["Orden de Operación y Plan de Contingencia","Solo una","Tres tipos"],"correct":0},{"area":"X","text":"La Orden de Operación sirve para:","opts":["Ejecutar una operación específica","Planificar contingencias","Informar novedades"],"correct":0},{"area":"X","text":"El Plan de Contingencia sirve para:","opts":["Prever situaciones de emergencia","Ejecutar operaciones rutinarias","Registrar el parte diario"],"correct":0},{"area":"X","text":"¿Cuál NO es directiva administrativa?","opts":["La Orden de Operación","El Boletín Informativo","La Orden Administrativa"],"correct":0},{"area":"X","text":"El cuerpo del formato CR-10 incluye:","opts":["Número, fecha, dirección, asunto y texto","Solo el texto","Solo la dirección"],"correct":0},{"area":"X","text":"¿Cuántos tipos de archivo de directivas hay?","opts":["Archivo activo y archivo pasivo","Solo un tipo","Tres tipos"],"correct":0},{"area":"X","text":"Diferencia entre Parte e Informe:","opts":["El Parte es periódico y el Informe es ocasional","El Informe es periódico y el Parte es ocasional","No hay diferencia"],"correct":0},{"area":"X","text":"Los 6 principios de redacción son:","opts":["Claridad, concisión, corrección, completez, cortesía y consideración","Claridad, brevedad y precisión","Orden, claridad y concisión"],"correct":0},{"area":"X","text":"SMP significa:","opts":["Sistema de Mantenimiento Preventivo","Sistema de Mantenimiento Programado","Servicio de Mantenimiento Primario"],"correct":0},{"area":"X","text":"¿Cuál NO es beneficio del SMP?","opts":["Aumenta la necesidad de repuestos","Reduce averías","Aumenta la disponibilidad"],"correct":0},{"area":"X","text":"¿Cuántas herramientas del SMP se listan?","opts":["Se listan varias herramientas como TM, PCPS, THP, etc.","Solo 2 herramientas","Solo 1 herramienta"],"correct":0},{"area":"X","text":"Documento básico que lista tareas con frecuencia y nivel de destreza:","opts":["Tarjeta de Mantenimiento (TM)","Parte de Control de Personal","Solicitud de Materiales"],"correct":0},{"area":"X","text":"Documento que describe paso a paso cada tarea:","opts":["Procedimiento de Control de Personal Supervisor (PCPS)","Tarjeta de Mantenimiento","Hoja de Instrucción"],"correct":0},{"area":"X","text":"La frecuencia T en mantenimiento significa:","opts":["Trimestral","Temporal","Total"],"correct":0},{"area":"X","text":"Nivel de destreza 1 corresponde a:","opts":["Puede realizar la tarea con supervisión","Puede realizar la tarea sin supervisión","Puede instruir a otros"],"correct":0},{"area":"X","text":"Nivel de destreza 3 corresponde a:","opts":["Puede instruir a otros en la tarea","Puede realizar con supervisión","Puede realizar sin supervisión"],"correct":0},{"area":"X","text":"El personal saca tareas diarias de:","opts":["La Tarjeta de Mantenimiento (TM)","El PCPS","El THP"],"correct":0},{"area":"X","text":"Primer paso para conducir el SMP:","opts":["Identificar y listar las tareas de mantenimiento","Solicitar materiales","Asignar personal"],"correct":0},{"area":"X","text":"Después de una tarea SMP se reporta:","opts":["En el formulario correspondiente del SMP","Verbalmente al superior","No se reporta"],"correct":0},{"area":"X","text":"PCPS significa:","opts":["Procedimiento de Control de Personal Supervisor","Parte de Control de Personal Superior","Plan de Control de Personal Subalterno"],"correct":0},{"area":"X","text":"THP significa:","opts":["Tarjeta de Historia del Personal","Tarjeta de Horas de Personal","Trámite de Horas de Personal"],"correct":0},{"area":"Y","text":"Las hojas de instrucción son herramientas:","opts":["Para la enseñanza y adiestramiento del personal","Para el control administrativo","Para el registro de personal"],"correct":0},{"area":"Y","text":"¿Cuántos tipos de hojas de instrucción hay?","opts":["Tres: Hoja de Información, Hoja de Asignaciones y Hoja de Trabajo","Dos tipos","Cuatro tipos"],"correct":0},{"area":"Y","text":"Longitud máxima de una Hoja de Información:","opts":["No excede una página","Hasta 3 páginas","Hasta 5 páginas"],"correct":0},{"area":"Y","text":"La Hoja de Asignaciones es útil para:","opts":["Asignar tareas y trabajos prácticos","Dar información teórica","Evaluar conocimientos"],"correct":0},{"area":"Y","text":"En pasos peligrosos de una Hoja de Trabajo debe aparecer:","opts":["Una advertencia destacada","Una nota al pie","No es necesario mencionarlo"],"correct":0},{"area":"Y","text":"Las ayudas a la enseñanza son:","opts":["Medios que facilitan el proceso de enseñanza-aprendizaje","Solo manuales","Solo equipos audiovisuales"],"correct":0},{"area":"Y","text":"Un Link Trainer es un ejemplo de:","opts":["Simulador de vuelo usado como ayuda a la enseñanza","Equipo de comunicaciones","Herramienta de mantenimiento"],"correct":0},{"area":"Y","text":"Una película sonora es una ayuda:","opts":["Audiovisual","Visual","Auditiva"],"correct":0},{"area":"Y","text":"¿Cuántos criterios de calidad tiene una ayuda?","opts":["Tiene criterios como sentido, significación, interés, etc.","Solo 3 criterios","Solo 1 criterio"],"correct":0},{"area":"Y","text":"El criterio sentido en una ayuda significa:","opts":["Que la ayuda debe apelar al mayor número posible de sentidos","Que la ayuda debe tener coherencia","Que la ayuda debe ser lógica"],"correct":0},{"area":"Y","text":"¿Cuántos tipos de pruebas de ejecución hay?","opts":["Tres: Producto Terminado, Lista de Comprobación y Asiento por el Examinado","Dos tipos","Cuatro tipos"],"correct":0},{"area":"Y","text":"La prueba de Producto Terminado se califica por:","opts":["El resultado final obtenido","El proceso seguido","La velocidad de ejecución"],"correct":0},{"area":"Y","text":"Ventaja del Producto Terminado:","opts":["Evalúa objetivamente el resultado final","Evalúa el proceso","Evalúa la teoría"],"correct":0},{"area":"Y","text":"La Lista de Comprobación es para:","opts":["Verificar pasos o elementos de una tarea","Calificar el producto final","Evaluar conocimientos teóricos"],"correct":0},{"area":"Y","text":"Desventaja de la Lista de Comprobación:","opts":["Puede omitir aspectos no listados","Es muy subjetiva","No permite evaluar nada"],"correct":0},{"area":"Y","text":"Ventaja del Asiento por el Examinado:","opts":["Registra la percepción del propio examinado sobre su ejecución","Es más objetivo","Es más rápido"],"correct":0},{"area":"Y","text":"Las pruebas combinadas mezclan:","opts":["Dos o más tipos de pruebas de ejecución","Teoría y práctica","Examen oral y escrito"],"correct":0},{"area":"Y","text":"¿Cuántas clases de pruebas de identificación hay?","opts":["Identificación Simple, Identificación por Agrupamiento, Correspondencia y Completamiento","Dos clases","Tres clases"],"correct":0},{"area":"Y","text":"La prueba de correspondencia consiste en:","opts":["Relacionar elementos de dos columnas","Identificar un elemento","Completar espacios en blanco"],"correct":0},{"area":"Y","text":"Las pruebas de identificación se califican por:","opts":["El número de aciertos","La velocidad de respuesta","La calidad de la redacción"],"correct":0},{"area":"Z","text":"Artículos Grupo A (Imprescindibles):","opts":["Son aquellos sin los cuales no se puede cumplir la misión","Son los más económicos","Son los que se consumen rápido"],"correct":0},{"area":"Z","text":"Artículos Grupo C (Convenientes):","opts":["Son aquellos cuya falta no impide cumplir la misión pero facilitan el servicio","Son los más costosos","Son los de uso diario"],"correct":0},{"area":"Z","text":"La Planilla Nº 11 corresponde a:","opts":["Planilla de consumo de abastecimiento","Planilla de personal","Planilla de uniformes"],"correct":0},{"area":"Z","text":"Las planillas de consumo se proveen:","opts":["Periódicamente según el ciclo de abastecimiento","Una vez al año","Mensualmente"],"correct":0},{"area":"Z","text":"Los efectos que abastece SERAP son propiedad de:","opts":["La Armada Nacional","El Ministerio de Defensa","El proveedor"],"correct":0},{"area":"Z","text":"Un suministro reglamentario tiene símbolo:","opts":["Letra R","Letra E","Letra X"],"correct":0},{"area":"Z","text":"Un suministro extraordinario tiene símbolo:","opts":["Letra E","Letra R","Letra X"],"correct":0},{"area":"Z","text":"De oficio significa:","opts":["Que se provee automáticamente sin solicitud previa","Que debe solicitarse formalmente","Que es de uso personal"],"correct":0},{"area":"Z","text":"¿Cuántas prioridades de pedidos SERAP hay?","opts":["Tres: Normal, Urgente y Especial","Dos: Normal y Urgente","Cuatro prioridades"],"correct":0},{"area":"Z","text":"La prioridad Especial requiere:","opts":["Aprobación del Comando General de la Armada","Solo la firma del Comandante","No requiere aprobación especial"],"correct":0},{"area":"Z","text":"La prioridad Urgente se caracteriza por:","opts":["Requiere respuesta inmediata del SERAP","Es la de menor prioridad","Es la prioridad estándar"],"correct":0},{"area":"Z","text":"El formulario SERAP Nº 1000 tiene:","opts":["Dos vías: una para el SERAP y otra para el archivo","Una sola vía","Tres vías"],"correct":0},{"area":"Z","text":"El liderazgo es el arte de:","opts":["Influir en las personas para lograr los objetivos","Dar órdenes","Administrar recursos"],"correct":0},{"area":"Z","text":"¿Cuántos estilos de liderazgo describe el manual?","opts":["Tres: Autocrático, Democrático y Flexible","Dos estilos","Cuatro estilos"],"correct":0},{"area":"Z","text":"El estilo de liderazgo recomendado es:","opts":["El que mejor se adapte a la situación","Siempre el autocrático","Siempre el democrático"],"correct":0},{"area":"Z","text":"¿Cuántos niveles tiene la Pirámide de Maslow?","opts":["Cinco niveles","Tres niveles","Siete niveles"],"correct":0},{"area":"Z","text":"El nivel más básico de Maslow es:","opts":["Necesidades fisiológicas","Necesidades de seguridad","Necesidades sociales"],"correct":0},{"area":"Z","text":"Un líder que busca poder y reconocimiento tiene necesidad de:","opts":["Estima","Seguridad","Autorrealización"],"correct":0},{"area":"Z","text":"Un grupo humano existe cuando hay:","opts":["Interacción entre personas con un objetivo común","Varias personas en el mismo lugar","Personas con el mismo rango"],"correct":0},{"area":"Z","text":"Diferencia entre líder real y formal:","opts":["El líder real es reconocido por el grupo, el formal es designado","El formal es reconocido por el grupo","No hay diferencia"],"correct":0},{"area":"Z","text":"¿Cuál NO es paso para crear grupos potentes?","opts":["Imponer la autoridad sin explicación","Establecer objetivos claros","Fomentar la comunicación"],"correct":0},{"area":"M","text":"¿Cuál es el estilo de liderazgo en el cual el líder emplea el estilo de comunicación de una vía?","opts":["Autocrático","Democrático","Flexible","Ninguno de los anteriores es correcto"],"correct":0},{"area":"M","text":"Señale cuál de las siguientes alternativas corresponde a una de las grandes cosas que un líder puede hacer para crear grupos potentes:","opts":["Ser un líder orgulloso del grupo","Ser amigable con sus subalternos, tolerando al máximo sus errores","Dar a su gente status dentro del grupo","Ninguna de las anteriores es correcta"],"correct":2},{"area":"M","text":"Un montón de gente se transforma en un grupo cuando existe:","opts":["Valores y normas de comportamiento no comunes","Sentimiento de identidad","Desempeño hacia objetivos comunes","b. y c. son correctas","Todas las anteriores son correctas"],"correct":3},{"area":"M","text":"¿Cuáles son las necesidades humanas que entran en juego una vez que el individuo satisface en parte las necesidades fisiológicas y de seguridad?","opts":["Necesidades sociales","Necesidades de estima","Necesidades de autorrealización","Ninguno de los anteriores"],"correct":0},{"area":"M","text":"Señale cuál de las características listadas corresponde al estilo de liderazgo \u0027Democrático\u0027:","opts":["Destreza en relaciones interpersonales","Impersonal","Libertad de acción del líder","Adaptable a la situación","Objetivos de corto plazo"],"correct":0},{"area":"M","text":"La forma precisa en que Ud. puede llevar a cabo el propósito del liderazgo variará mucho de un grupo a otro, pero generalmente todo lo que haga para que se realice el trabajo puede ser agrupado dentro de ciertas funciones las cuáles son:","opts":["Mantener alta la moral de los integrantes del grupo y retener el control sobre todas las acciones del grupo","Proporcionar supervisión técnica al grupo y alentar la participación de los integrantes del grupo","Cumplir funciones de supervisión, administrativa y educativa","Mantener elevada la moral de los integrantes del grupo, proporcionarles supervisión técnica y cumplir funciones administrativas"],"correct":3},{"area":"M","text":"El asiento de la imputación provisoria usando el precio de referencia del formulario de \u0027Solicitud de materiales y servicios\u0027 la efectúa:","opts":["SERAP","Unidad solicitante","Gran Comando","SECON"],"correct":2},{"area":"M","text":"Tomando en cuenta la clasificación de los Suministros, los artículos reglamentarios que se soliciten antes de vencer el plazo de duración que tienen establecido, caen en la categoría de suministros:","opts":["Con cargo","Provisorios","Extraordinarios","Reglamentarios","Especiales"],"correct":2},{"area":"M","text":"Aquellos servicios o abastecimientos que pueden prescindirse transitoriamente, sin disminuir en forma sensible o inmediata la eficiencia de las Unidades, corresponden a la categoría:","opts":["Opcionales","Imprescindibles","Convenientes","Necesarios"],"correct":3},{"area":"M","text":"Indique quién efectúa la imputación definitiva del precio de un artículo:","opts":["SERAP","Unidad solicitante","Gran Comando","SECON","DISER"],"correct":2},{"area":"M","text":"Indique en qué vía de la \u0027Solicitud de materiales y servicios\u0027 la Unidad solicitante firma y remite al SERAP para finalizar el trámite:","opts":["Amarilla","Rosada","Celeste","Verde"],"correct":3},{"area":"M","text":"Indicar cuál de los factores listados influye en el comportamiento humano:","opts":["La cultura de cada persona","La situación presente","Las diferencias individuales","Todas las anteriores son correctas"],"correct":3},{"area":"M","text":"El primer camino para que su grupo retribuya, es crear para todos sus miembros:","opts":["Una estructura social segura y satisfactoria","Metas retadoras y realistas","Metas concretas","Status dentro del grupo"],"correct":0},{"area":"M","text":"El líder que tiene como criterio del éxito el reconocimiento, es aquel motivado por:","opts":["La seguridad","Socialmente","El ego","El auto-mejoramiento","c y d son correctas"],"correct":2},{"area":"M","text":"Relacione las clases de necesidades humanas con su orden de importancia. ¿En qué orden de importancia se ubica la necesidad de SEGURIDAD? (1ro = mayor importancia, 5to = menor importancia)","opts":["1ro","2do","3ro","4to","5to"],"correct":1},{"area":"M","text":"Relacione las clases de necesidades humanas con su orden de importancia. ¿En qué orden de importancia se ubica la necesidad de EGO? (1ro = mayor importancia, 5to = menor importancia)","opts":["1ro","2do","3ro","4to","5to"],"correct":3},{"area":"M","text":"Relacione las clases de necesidades humanas con su orden de importancia. ¿En qué orden de importancia se ubican las necesidades SOCIALES? (1ro = mayor importancia, 5to = menor importancia)","opts":["1ro","2do","3ro","4to","5to"],"correct":2},{"area":"M","text":"Relacione las clases de necesidades humanas con su orden de importancia. ¿En qué orden de importancia se ubica la necesidad de REALIZACIÓN? (1ro = mayor importancia, 5to = menor importancia)","opts":["1ro","2do","3ro","4to","5to"],"correct":4},{"area":"M","text":"Relacione las clases de necesidades humanas con su orden de importancia. ¿En qué orden de importancia se ubica la necesidad de SUPERVIVENCIA? (1ro = mayor importancia, 5to = menor importancia)","opts":["1ro","2do","3ro","4to","5to"],"correct":0},{"area":"M","text":"El liderazgo que consigue la ejecución de trabajos en corto plazo y en el cual los grupos subordinados producen bien por períodos cortos, mientras el líder está presente, pero su producción disminuye durante períodos largos, es de estilo:","opts":["Democrático","Flexible","Autocrático","Democrático o Autocrático, indistintamente"],"correct":2},{"area":"M","text":"Relacione las características con los estilos de liderazgo. La característica \u0027DIRECTO\u0027 corresponde a:","opts":["Autocrático","Democrático","Flexible"],"correct":0},{"area":"M","text":"Relacione las características con los estilos de liderazgo. La característica \u0027OBJETIVOS DE LARGO PLAZO\u0027 corresponde a:","opts":["Autocrático","Democrático","Flexible"],"correct":1},{"area":"M","text":"Relacione las características con los estilos de liderazgo. La característica \u0027REQUIERE TIEMPO\u0027 corresponde a:","opts":["Autocrático","Democrático","Flexible"],"correct":1},{"area":"M","text":"Relacione las características con los estilos de liderazgo. La característica \u0027ADAPTABLE A LA SITUACIÓN\u0027 corresponde a:","opts":["Autocrático","Democrático","Flexible"],"correct":2},{"area":"M","text":"Relacione las características con los estilos de liderazgo. La característica \u0027LIBERTAD DE ACCIÓN DEL LÍDER\u0027 corresponde a:","opts":["Autocrático","Democrático","Flexible"],"correct":2},{"area":"M","text":"Relacione las características con los estilos de liderazgo. La característica \u0027RÁPIDA RESPUESTA\u0027 corresponde a:","opts":["Autocrático","Democrático","Flexible"],"correct":0},{"area":"M","text":"Relacione las características con los estilos de liderazgo. La característica \u0027CONFIANZA DEL LÍDER EN SUS SEGUIDORES\u0027 corresponde a:","opts":["Autocrático","Democrático","Flexible"],"correct":1},{"area":"M","text":"Relacione las características con los estilos de liderazgo. La característica \u0027JUICIOS DEL LÍDER\u0027 corresponde a:","opts":["Autocrático","Democrático","Flexible"],"correct":2},{"area":"M","text":"Relacione las características con los estilos de liderazgo. La característica \u0027CONTROL POR EL LÍDER\u0027 corresponde a:","opts":["Autocrático","Democrático","Flexible"],"correct":0},{"area":"M","text":"Los suministros incluidos en una Planilla de Consumo se clasifican como:","opts":["Extraordinario","De oficio","De gestión","Con cargo"],"correct":1},{"area":"M","text":"Relacione las prioridades de los pedidos. ¿Cuál es el nombre de los pedidos que son recibidos por SERAP en cualquier fecha y cuyo trámite interno comienza el día 10 de cada mes?","opts":["Urgentes","Graves y urgentes","Normales","Especiales"],"correct":2},{"area":"M","text":"Relacione las prioridades de los pedidos. ¿Cuál es el nombre de los pedidos tendientes a subsanar averías por accidentes u otras causas que disminuyen sensiblemente la efectividad de una Unidad?","opts":["Urgentes","Graves y urgentes","Normales","Especiales"],"correct":3},{"area":"M","text":"Relacione las prioridades de los pedidos. ¿Cuál es el nombre de los pedidos que, en virtud de las circunstancias en que se piden, son recibidos en cualquier momento y puestos de inmediato a consideración del Jefe?","opts":["Urgentes","Graves y urgentes","Normales","Especiales"],"correct":0},{"area":"M","text":"Relacione las prioridades de los pedidos. ¿Cuál es el nombre de los pedidos que son los únicos que pueden ser formulados verbalmente?","opts":["Urgentes","Graves y urgentes","Normales","Especiales"],"correct":1},{"area":"M","text":"Relacione las prioridades de los pedidos. ¿Cuál es el nombre de los pedidos para cumplir órdenes superiores con plazo de cumplimiento fijo y breve?","opts":["Urgentes","Graves y urgentes","Normales","Especiales"],"correct":3},{"area":"M","text":"Relacione las prioridades de los pedidos. ¿Para cuál tipo de pedido, cuando se acepta la prioridad, el pedido se cursa con un sello y firma en rojo autorizando el suministro con ese carácter?","opts":["Urgentes","Graves y urgentes","Normales","Especiales"],"correct":0},{"area":"M","text":"Cuál de las siguientes es una característica del estilo autocrático de liderazgo?","opts":["Adaptable a la situación","Requiere tiempo","Es impersonal","Admite la participación de los subordinados","Libertad de acción del líder"],"correct":2},{"area":"M","text":"Cuando el SERAP entrega un artículo en calidad de préstamo, se está ante un suministro:","opts":["Reglamentario","Especial","Con cargo","Provisorio","Extraordinario"],"correct":3},{"area":"M","text":"Cuál de las siguientes es una característica del estilo flexible de liderazgo?","opts":["Directo","Relaciones humanas y trabajo en equipo","Impersonal","Objetivos de largo plazo","Libertad de acción del líder"],"correct":4},{"area":"M","text":"Cuál es una de las grandes cosas que un líder puede hacer para crear un grupo potente?","opts":["No enfatizar la estructura social","Hacer sentirse orgullosos de su grupo, a su gente","Crear metas ideales","Crear metas generales y abstractas","Todas las anteriores son correctas"],"correct":1},{"area":"M","text":"En lo que respecta a la categoría C de Abastecimientos y Servicios, la misma está integrada por los materiales:","opts":["Intermedios","Opcionales","Convenientes","Reglamentarios","Necesarios"],"correct":2},{"area":"M","text":"Las necesidades comunes de todas las personas son:","opts":["2","3","4","5","6"],"correct":3},{"area":"M","text":"Relacione las clases de pruebas de identificación con su ocasión de uso. Las partes que se van a usar de un equipo se destacan mediante marcas o rótulos numerados. Esto corresponde a:","opts":["Identificación y Función de Piezas Desmontadas","Identificación y Función de Piezas en una Instalación","Identificación y Función de Piezas Desmontadas y las de una Instalación","Identificación y Función de Piezas Representadas Gráficamente","Identificación y Función de Piezas Representadas Mediante Descripción Verbal"],"correct":1},{"area":"M","text":"Relacione las clases de pruebas de identificación con su ocasión de uso. La prueba contiene partes de piezas desmontadas y partes de una instalación, estando ambas cerca del equipo a usar. Esto corresponde a:","opts":["Identificación y Función de Piezas Desmontadas","Identificación y Función de Piezas en una Instalación","Identificación y Función de Piezas Desmontadas y las de una Instalación","Identificación y Función de Piezas Representadas Gráficamente","Identificación y Función de Piezas Representadas Mediante Descripción Verbal"],"correct":2},{"area":"M","text":"Relacione las clases de pruebas de identificación con su ocasión de uso. Se debe tener cuidado extremo en las descripciones para que no haya dudas referente al uso de la pieza. Esto corresponde a:","opts":["Identificación y Función de Piezas Desmontadas","Identificación y Función de Piezas en una Instalación","Identificación y Función de Piezas Desmontadas y las de una Instalación","Identificación y Función de Piezas Representadas Gráficamente","Identificación y Función de Piezas Representadas Mediante Descripción Verbal"],"correct":4},{"area":"M","text":"Relacione las clases de pruebas de identificación con su ocasión de uso. Se quita una pieza del equipo o se obtiene del pañol. Esto corresponde a:","opts":["Identificación y Función de Piezas Desmontadas","Identificación y Función de Piezas en una Instalación","Identificación y Función de Piezas Desmontadas y las de una Instalación","Identificación y Función de Piezas Representadas Gráficamente","Identificación y Función de Piezas Representadas Mediante Descripción Verbal"],"correct":0},{"area":"M","text":"Relacione las clases de pruebas de identificación con su ocasión de uso. Cuando la pieza resulta muy grande, se hace un cuadro exacto de la misma. Esto corresponde a:","opts":["Identificación y Función de Piezas Desmontadas","Identificación y Función de Piezas en una Instalación","Identificación y Función de Piezas Desmontadas y las de una Instalación","Identificación y Función de Piezas Representadas Gráficamente","Identificación y Función de Piezas Representadas Mediante Descripción Verbal"],"correct":3},{"area":"M","text":"Indique cuáles son las diferentes formas en que pueden ser calificados los Productos Terminados:","opts":["Medidas físicas, Errores o Libres de defectos, Escala de Producto Modelo, Funciona o no y Tiempo","Medidas, Lista de comprobación y forma","Uso de herramientas, Procedimiento, Precauciones de Seguridad","Tiempo, Escala de Productos modelo, Funciona o no, Procedimiento, Errores o Libres de defectos"],"correct":0},{"area":"M","text":"Indique a cuál de las siguientes tareas se adecúa más una prueba del tipo Lista de Comprobación:","opts":["Escribir una C/S","Poner en paralelo un alternador","Localizar averías de sistemas mecánicos","Medir la resistencia a tierra en un cable","a. y b. son correctas"],"correct":1},{"area":"M","text":"En la Tarjeta de Mantenimiento (TM), la lista de suministros necesarios para hacer el trabajo se encuentran en el recuadro titulado:","opts":["Descripción de tarea","Procedimiento","Referencias","Equipo","Herramientas, materiales, repuestos, equipos de prueba"],"correct":4},{"area":"M","text":"El error de derecho, constituye excusa válida por el plazo de:","opts":["30 días para faltas y 60 para delitos para reclutas que ingresan por primera vez","15 días para todo","60 días para todo"],"correct":0},{"area":"M","text":"Cuando un Sub-Oficial es sancionado en arresto simple o riguroso, ¿a quién de los mencionados debe comunicarle?","opts":["A su superior inmediato","Al 2do. Comandante","Al Sub-Oficial de Guardia","Al Comandante","Al Cabo de Guardia Militar"],"correct":0},{"area":"M","text":"El error de derecho para un militar considerado reingreso vence a los:","opts":["15 días para faltas y 15 días para delitos","15 días para faltas y 30 días para delitos","30 días para faltas y 30 días para delitos","30 días para faltas y 60 días para delitos","60 días para faltas y 60 días para delitos"],"correct":0},{"area":"M","text":"¿Cuál de las siguientes es obligación del Sub-Oficial de guardia?","opts":["Entregar novedades del personal al 2do. Comandante","Disponer qué división debe concurrir a cortarse el pelo","Informarse de quién no está abordo y debe guardársele comida","Cuidar el aseo de la cocina dentro de las horas de trabajo","Ninguna de las anteriores es correcta"],"correct":2},{"area":"M","text":"Se considera que se configura un acto de obediencia debida cuando:","opts":["La orden emana de una autoridad que es competente para darla","La orden emana de una autoridad","La orden emana de una autoridad y el receptor tiene la obligatoriedad de cumplirla","La orden emana de una autoridad que es competente para darla y el receptor tiene la obligación de cumplirla"],"correct":3},{"area":"M","text":"¿Cuál es la pena disciplinaria para Sub-Oficiales que significa baja de la Armada?","opts":["Suspensión de cargo o destino","Privación de grado","Prisión","Privación de cargo o destino"],"correct":3},{"area":"M","text":"A los SS/OO, la Privación de Grado puede serle impuesta por:","opts":["El Comandante de la Unidad","Resolución del Ministerio de Defensa Nacional","El Comandante en Jefe de la Armada","Cualquiera de los anteriores"],"correct":1},{"area":"M","text":"Considerando lo establecido en el Código Penal Militar para la prescripción de los delitos, los hechos que se castigan con pena de inhabilitación absoluta para cargos, oficios públicos y derechos políticos, prescriben:","opts":["A los dos años","Si el máximo fijado por la ley es mayor de 10 años hasta 20, a los 15","Si el máximo es mayor de 2 años hasta los 10, a los diez","A los cuatro años"],"correct":3},{"area":"M","text":"¿Cuáles son las penas que se aplicarán para corregir las faltas contra la disciplina a los clases?","opts":["Apercibimiento, Recargo de Servicio Mecánico, Arresto Simple, Arresto Riguroso y Privación de Grado","Apercibimiento, Arresto Simple, Arresto Riguroso, Suspensión de Cargo o Destino y Privación de Grado","Apercibimiento, Arresto Simple, Arresto Riguroso, Suspensión de Cargo o Destino, Privación de Cargo o Destino y Privación de Grado","Arresto Simple, Arresto Riguroso, Suspensión de Cargo o Destino, Privación de Cargo o Destino y Privación de Grado"],"correct":2},{"area":"M","text":"Acorde a lo establecido en el R.S.A.B, los SS/OO de Cargo:","opts":["Están exceptuados del servicio de guardias","Deben cumplir el servicio de guardias","Podrán ser exceptuados del servicio de guardias por su Cte.","Este Artículo no establece nada al respecto"],"correct":2},{"area":"M","text":"¿Cuál de las siguientes no es una función básica de un sistema de guardia?","opts":["Interrogar a los intrusos","Dar la alarma","Descubrir a los intrusos","Identificar al personal autorizado","Detener al personal no autorizado"],"correct":0},{"area":"M","text":"Está aplicándose en su buque el Rol de Búsqueda porque se recibió una llamada indicando que se había colocado abordo un artefacto explosivo. Está presente sólo la brigada de guardia. ¿Qué criterio básico se usará para asignar el personal a la búsqueda?","opts":["Se solicitarán los servicios de técnicos del Servicio de Armamento del Ejército","Se asignará la búsqueda al personal de guardia en base a su conocimiento o asignación habitual a los espacios del buque","Se desalojará el buque y citará a toda la tripulación","Se pedirá la presencia del personal del Grupo de Buceo"],"correct":1},{"area":"M","text":"El propósito que debe perseguirse al practicar diariamente el rol de incendios en una actividad naval es:","opts":["Mantener el alistamiento del personal","Detectar fallas en el adiestramiento del personal","Detectar fallas en los planes","Todas las anteriores son correctas","a. y b. son correctas"],"correct":3},{"area":"M","text":"¿Cuál de los siguientes es un concepto básico para la aplicación de la seguridad física?","opts":["Una sola barrera brinda suficiente seguridad física","Todas las instalaciones deben ser estudiadas de acuerdo a un patrón común","Para el espía es imprescindible hacer desaparecer la información","En última instancia, la seguridad es brindada por barreras de energía","No existen barreras impenetrables"],"correct":4},{"area":"M","text":"El tamaño de una Fuerza de Guardia depende normalmente:","opts":["De las barreras animales disponibles","Del número de puestos a ser cubiertos en 24 horas","De la cantidad de puestos administrativos a ser cubiertos","De la cantidad de puestos móviles a ser cubiertos","De la cantidad de puestos fijos a ser cubiertos"],"correct":1},{"area":"M","text":"En un buque se detuvo un intruso que recorrió el buque y se sospecha que colocó un artefacto de sabotaje. ¿Cuáles serán los espacios a su cargo a los que dará prioridad en la búsqueda?","opts":["Espacios a los que pudo tener acceso el intruso","Pañoles del departamento, cerrados y sin signo de violación","Timones","Domo del sonar","Sala de máquinas"],"correct":0},{"area":"M","text":"¿Cuál de las siguientes puede definirse como barrera estructural?","opts":["Ríos","Alarmas","Bosques","Archivos","Iluminación protectora"],"correct":3},{"area":"M","text":"El agrupamiento de las actividades navales dentro de un área geográfica, a los efectos de la seguridad, se llama:","opts":["Unidad huésped","Unidad aislada","Área Naval","Instalación naval","Unidad anfitriona"],"correct":2},{"area":"M","text":"¿Cuál de los siguientes es un deber típico para una fuerza de guardia?","opts":["Limpieza general del área","Instruir al Personal apostado","Evacuar y cuidar al Personal en emergencias y catástrofes","Realizar ejercicios de tiro con el Personal a la orden","a, b y c son correctas"],"correct":2},{"area":"M","text":"El grupo de control \u0027Escuadra C\u0027 se armará y se alertará cuando se establezca abordo la Condición:","opts":["IV","II","I","III"],"correct":2},{"area":"M","text":"Indique la altura mínima aceptable en metros que debe tener una cerca:","opts":["3","1,20","1,80","2,80"],"correct":2},{"area":"M","text":"Indique la separación máxima en metros entre postes de una cerca:","opts":["3","1,80","2","5"],"correct":0},{"area":"M","text":"Relacione los siguientes términos con los conceptos empleados en Seguridad Física. ¿A qué categoría corresponde \u0027ROU 03 Montevideo\u0027?","opts":["Área Naval","Instalación","Actividad Naval","No corresponde a ninguna de las anteriores"],"correct":3},{"area":"M","text":"Relacione los siguientes términos con los conceptos empleados en Seguridad Física. ¿A qué categoría corresponde \u0027DIPER\u0027?","opts":["Área Naval","Instalación","Actividad Naval","No corresponde a ninguna de las anteriores"],"correct":2},{"area":"M","text":"Relacione los siguientes términos con los conceptos empleados en Seguridad Física. ¿A qué categoría corresponde \u0027Pañol de materiales del SERAP\u0027?","opts":["Área Naval","Instalación","Actividad Naval","No corresponde a ninguna de las anteriores"],"correct":1},{"area":"M","text":"Relacione los siguientes términos con los conceptos empleados en Seguridad Física. ¿A qué categoría corresponde \u0027Área Guruyu\u0027?","opts":["Área Naval","Instalación","Actividad Naval","No corresponde a ninguna de las anteriores"],"correct":0},{"area":"M","text":"¿Cuál de los siguientes es un deber de la Fuerza de Guardia?","opts":["Evacuar y cuidar al personal, en emergencias y catástrofes","Poner en funcionamiento los sistemas de control de personas, vehículos y propiedad","Prevenir hurtos","Todos los anteriores son deberes de la Fuerza de Guardia"],"correct":3},{"area":"M","text":"¿Cuáles son los tipos de puestos básicos de una Fuerza de Guardia?","opts":["Fijos y móviles","Administrativos y de seguridad","Fijos, móviles y administrativos","Fijos y alternativos"],"correct":2},{"area":"M","text":"¿Cuál es el mejor método de identificación de personas?","opts":["El reconocimiento visual","La Ficha de Identificación","Las listas o nóminas de personal autorizado","Ninguna de las anteriores es correcta","a. y b. son correctas"],"correct":0},{"area":"M","text":"¿Sobre quién recae la responsabilidad primaria por el planeo de la prevención de incendios, en las actividades terrestres?","opts":["Oficial de Seguridad","2do. Comandante","Oficial de Administración","Comandante","Oficial de Control de Averías"],"correct":0},{"area":"M","text":"¿Cómo se denominan las comunicaciones que son de dos vías para el intercambio de información entre dos o más puntos dentro de una actividad naval?","opts":["Exteriores","Mínimas","Rápidas","Interiores"],"correct":3},{"area":"M","text":"Para llevar a cabo las condiciones de alistamiento para enfrentar y controlar situaciones de disturbios civiles, ¿cuántos grupos de control se activarán?","opts":["1","2","3","4","5"],"correct":2},{"area":"M","text":"Relacione las condiciones de alistamiento para disturbios y manifestaciones. ¿En qué situación corresponde implantar la Condición III?","opts":["Probables disturbios","Condición de visita general, aumenta la posibilidad de disturbios","Inminente un disturbio de proporciones. Se espera un ataque","Guardia normal, visita abordo, posibilidad de disturbios remota"],"correct":1},{"area":"M","text":"Relacione las condiciones de alistamiento para disturbios y manifestaciones. ¿En qué situación corresponde implantar la Condición I?","opts":["Probables disturbios","Condición de visita general, aumenta la posibilidad de disturbios","Inminente un disturbio de proporciones. Se espera un ataque","Guardia normal, visita abordo, posibilidad de disturbios remota"],"correct":2},{"area":"M","text":"Relacione las condiciones de alistamiento para disturbios y manifestaciones. ¿En qué situación corresponde implantar la Condición IV?","opts":["Probables disturbios","Condición de visita general, aumenta la posibilidad de disturbios","Inminente un disturbio de proporciones. Se espera un ataque","Guardia normal, visita abordo, posibilidad de disturbios remota"],"correct":3},{"area":"M","text":"Relacione las condiciones de alistamiento para disturbios y manifestaciones. ¿En qué situación corresponde implantar la Condición II?","opts":["Probables disturbios","Condición de visita general, aumenta la posibilidad de disturbios","Inminente un disturbio de proporciones. Se espera un ataque","Guardia normal, visita abordo, posibilidad de disturbios remota"],"correct":0},{"area":"M","text":"El grupo de control para llevar a cabo las condiciones de alistamiento para control de disturbios, denominado Escuadra A, será compuesto por:","opts":["4 a 8 hombres","10 a 14 hombres","7 a 10 hombres","5 a 10 hombres"],"correct":0},{"area":"M","text":"Relacione las responsabilidades de la Guía Funcional del S/O de Guardia. \u0027El S/O de Guardia es el ayudante en el mantenimiento del orden, la policía interna, etc.\u0027 Esto corresponde a:","opts":["Deberes, responsabilidad, autoridad","Función Básica","Relación Orgánica"],"correct":1},{"area":"M","text":"Relacione las responsabilidades de la Guía Funcional del S/O de Guardia. \u0027Vigila el servicio de guardia mediante el control de las consignas de los vigilantes y centinelas en compañía del Cabo de Guardia.\u0027 Esto corresponde a:","opts":["Deberes, responsabilidad, autoridad","Función Básica","Relación Orgánica"],"correct":0},{"area":"M","text":"Relacione las responsabilidades de la Guía Funcional del S/O de Guardia. \u0027Hace cumplir la tenida del día.\u0027 Esto corresponde a:","opts":["Deberes, responsabilidad, autoridad","Función Básica","Relación Orgánica"],"correct":0},{"area":"M","text":"Relacione las responsabilidades de la Guía Funcional del S/O de Guardia. \u0027El S/O de Guardia es responsable ante el Oficial de Guardia por la seguridad de los arrestados y presos.\u0027 Esto corresponde a:","opts":["Deberes, responsabilidad, autoridad","Función Básica","Relación Orgánica"],"correct":2},{"area":"M","text":"Relacione las responsabilidades de la Guía Funcional del S/O de Guardia. \u0027Del S/O de Guardia depende directamente el Cabo de Guardia.\u0027 Esto corresponde a:","opts":["Deberes, responsabilidad, autoridad","Función Básica","Relación Orgánica"],"correct":2},{"area":"M","text":"Con respecto a la Guía Funcional del S/O de Guardia, indique a qué parte de ella corresponde el siguiente enunciado: \u0027El S/O de Guardia es responsable directo ante el Oficial de Guardia por el mantenimiento del orden y la disciplina...\u0027","opts":["Función Básica","Relación Orgánica","Deberes, responsabilidades y autoridad","Responsabilidades"],"correct":1},{"area":"M","text":"¿Cuál es la pena disciplinaria según la cual el Sub-Oficial, mientras dure la misma, no puede sancionar ni conducir al Personal que le estaba subordinado (se le suspende su autoridad) y que tiene su mayor peso en el plano moral?","opts":["Arresto simple","Suspensión de cargo o destino","Privación de grado","Apercibimiento","Privación de cargo o destino"],"correct":1},{"area":"M","text":"¿Cuál de las siguientes penas para corregir las faltas contra la disciplina no corresponde que se aplique a clases?","opts":["Arresto simple","Recargo de Servicio Mecánico","Suspensión de cargo o destino","Privación de cargo o destino","Privación de grado"],"correct":1},{"area":"M","text":"El Rol de Guardias, Zafarranchos y Estaciones:","opts":["Está basado en el Manual Orgánico del Buque","Está basado en el Manual de Organización de Combate del Buque","Está basado en el Manual Orgánico y en el de Organización de Combate del Buque","Es idéntico para todos los buques del mismo tipo"],"correct":2},{"area":"M","text":"Al confeccionar el Rol de Guardias, Zafarranchos y Estaciones, si Ud. está escaso de hombres, deberá asignar las estaciones más vitales y, a efectos de que le proporcionen más hombres sacados de otra división (si fuera posible), deberá notificar la situación al:","opts":["Oficial de Administración","2do. Comandante","Oficial de Seguridad","Oficial de Armas"],"correct":3},{"area":"M","text":"Indique cuál de los siguientes es uno de los puestos más comunes que Ud. como S/O 2da. ocupará en una Unidad de Tierra:","opts":["Oficial de Guardia","Oficial de División","Instructor","b y c son correctas","Todas las anteriores son correctas"],"correct":3},{"area":"M","text":"¿Cuál de los siguientes es un estudio de puesto sobre una base orgánica?","opts":["Análisis de trabajo de los electricistas de toda la Armada","Análisis de trabajo de los Oficiales de Relaciones Públicas","Análisis de trabajo de los telegrafistas en los PR","Análisis de todos los trabajos en ESMAY N-5","Análisis de trabajo de los mozos de la Armada"],"correct":3},{"area":"M","text":"El cuestionario de análisis de trabajo estudia:","opts":["El tripulante que ocupa el puesto","La estructura orgánica de la Unidad","Los deberes y requerimientos del puesto","Los destinos asignados dentro del cargo","La asignación de trabajos dentro del puesto"],"correct":2},{"area":"C","text":"Según el Decreto Nº 5.967, el período de instrucción para reclutas que ingresan por primera vez vence a los efectos del Art. 14 del CPM:","opts":["15 días para faltas y 30 días para delitos","30 días para faltas y 60 días para delitos","60 días para faltas y 90 días para delitos"],"correct":1},{"area":"C","text":"Según el Art. 14 del CPM y el Decreto Nº 5.967, en caso de reingresos a distintos organismos (de Ejército a Marina o viceversa), el período de instrucción será de:","opts":["15 días para faltas y 15 días para delitos","30 días para faltas y 60 días para delitos","Solo aplica para el primer ingreso, no para reingresos"],"correct":0},{"area":"C","text":"Según el Art. 33 del CPM, ¿cuál de las siguientes NO es una de las excepciones a las circunstancias que impiden el castigo?","opts":["El perdón judicial, que no existe en el orden militar","La gracia, que será concedida por el Presidente de la República","La legítima defensa propia o de terceros"],"correct":2},{"area":"C","text":"Según el Art. 29 del Código Penal Ordinario (obediencia debida), si un S/O ajeno a la guardia ordena al cabo de guardia que abandone su puesto, el cabo:","opts":["Debe obedecer por la jerarquía del S/O","NO debe obedecer porque ese S/O no es competente para dar esa orden en ese momento","Debe pedir permiso al Oficial de Guardia antes de obedecer"],"correct":1},{"area":"C","text":"Según el Art. 35 del CPM (sanción disciplinaria frente al juicio), ¿puede un militar ser sancionado disciplinariamente por un hecho del cual fue absuelto en juicio?","opts":["No, si fue absuelto en juicio no puede ser sancionado disciplinariamente","Sí, la sentencia absolutoria no impide que el hecho se castigue disciplinariamente como falta","Solo si el juicio fue por delito militar y no ordinario"],"correct":1},{"area":"C","text":"Según el Art. 27 del Reglamento de Disciplina, el Arresto Riguroso para Sub-Oficiales se cumple:","opts":["En buques o reparticiones navales a que pertenecen","En su camarote o alojamiento aislado","En sala de disciplina del buque"],"correct":1},{"area":"C","text":"Según el Art. 28 del Reglamento de Disciplina, el límite de la Suspensión de Cargo o Destino puede durar:","opts":["Hasta 30 días","Hasta 60 días","Desde 30 hasta 90 días"],"correct":2},{"area":"C","text":"Según el Art. 45 del Reglamento de Disciplina, cuando se impone arresto a un Sub-Oficial, éste debe dar cuenta:","opts":["Al Comandante del buque personalmente","Personalmente a su superior inmediato y al oficial de servicio, si aquel fuese subalterno de éste","Solo al Oficial de Guardia"],"correct":1},{"area":"C","text":"Según el Art. 82c del Reglamento de Disciplina, la Privación de Grado a un Sub-Oficial solo puede serle impuesta por:","opts":["El Comandante del buque","Resolución del Ministerio de Defensa Nacional","El Comandante en Jefe de la Armada"],"correct":1},{"area":"C","text":"Según el Art. 84 del Reglamento de Disciplina, un marino-militar que considera haber sufrido una pena injusta puede reclamar:","opts":["Antes de cumplir la pena, interrumpiendo su ejecución","En forma respetuosa y de acuerdo con las disposiciones reglamentarias","Colectivamente si comparte la queja con otros compañeros"],"correct":1},{"area":"C","text":"Según el Art. 90 del Reglamento de Disciplina, ningún reclamo podrá interponerse antes de las 24 horas ni después de:","opts":["Un día de haber cumplido la pena","Tres días de haber cumplido la pena","Siete días de haber cumplido la pena"],"correct":1},{"area":"C","text":"Según el Art. 117 del CPM, los hechos que se castigan con pena de inhabilitación absoluta para cargos, oficios públicos y derechos políticos, prescriben:","opts":["A los dos años","A los cuatro años","A los diez años"],"correct":1},{"area":"C","text":"Según el Art. 118 del CPM, las faltas disciplinarias prescriben:","opts":["A los dos meses","A los seis meses","A los doce meses"],"correct":0},{"area":"C","text":"Según el RSAB Art. 1051, el S/O de guardia no tendrá puesto determinado y recorrerá con frecuencia:","opts":["Solo el portalón y la cubierta principal","La primera y segunda cubierta","Todas las cubiertas incluyendo sala de máquinas"],"correct":1},{"area":"C","text":"Según el RSAB Art. 1210, ¿cuál es la misión de la guardia militar a bordo?","opts":["Solo custodiar los presos y detenidos","Hacer cumplir las órdenes de disciplina y policía, custodiar los presos y detenidos, y rendir los honores militares","Solo controlar el acceso de personal al buque"],"correct":1},{"area":"C","text":"Según el RSAB Art. 1227, el S/O y el cabo son los únicos responsables ante el oficial de guardia de:","opts":["El aseo de los sollados","Los individuos que embarquen sin licencia","El correcto servicio de los marineros en sus puestos"],"correct":1},{"area":"C","text":"Según el Art. 1218 del RSAB, el Sub-Oficial y el Cabo de facción son personalmente responsables ante el oficial de guardia de:","opts":["La disciplina general del buque en todas sus áreas","La puntual ejecución del servicio de todos los hombres de la guardia militar bajo sus órdenes","El control de las áreas departamentales durante horas de trabajo"],"correct":1},{"area":"C","text":"Según el Art. 1222 del RSAB, el S/O y el cabo de guardia deben estar impuestos de: el movimiento de presos, embarcaciones, gente fuera del buque, santabárbaras y pañoles de munición abiertos y:","opts":["Los permisos del día siguiente","Las embarcaciones que hubiera al costado","Los artículos prohibidos introducidos a bordo"],"correct":1},{"area":"E","text":"¿Cuántas categorías de barreras de seguridad física se identifican?","opts":["Tres: naturales, estructurales y humanas","Cuatro: naturales, estructurales, humanas y de energía","Cinco: naturales, estructurales, humanas, animales y de energía"],"correct":2},{"area":"E","text":"Las barreras de energía son \u0027casi siempre artefactos eléctricos o electrónicos\u0027. Un ejemplo es:","opts":["Un muro de hormigón","La iluminación protectora y los aparatos de alarma contra intrusos","Una patrulla de perros adiestrados"],"correct":1},{"area":"E","text":"¿Cuál de los siguientes NO es uno de los conceptos básicos de la seguridad física?","opts":["No existe una barrera impenetrable","La seguridad física debe establecerse en base a un sistema de defensa en profundidad","Una sola barrera bien construida es suficiente para impedir el acceso"],"correct":2},{"area":"E","text":"La altura mínima aceptable de una cerca de seguridad es:","opts":["1,20 metros","1,80 metros","2,40 metros"],"correct":1},{"area":"E","text":"La separación máxima entre postes de una cerca de seguridad debe ser de:","opts":["3 metros","5 metros","10 metros"],"correct":0},{"area":"E","text":"La zona despejada al exterior de una cerca debe extenderse hasta no menos de:","opts":["3 metros","6 metros","15 metros"],"correct":1},{"area":"E","text":"La zona despejada al interior de una cerca debe extenderse hasta no menos de:","opts":["6 metros","15 metros","20 metros"],"correct":1},{"area":"E","text":"El sistema de guardia tiene cuatro funciones básicas. ¿Cuál es el único elemento capaz de cumplir las cuatro funciones?","opts":["El perro adiestrado","El hombre, por ser el único que puede pensar","El sistema electrónico de alarmas"],"correct":1},{"area":"E","text":"¿Qué pueden hacer las barreras de energía pero NO pueden hacer?","opts":["Solo pueden dar la alarma, no detectar intrusos","Pueden descubrir al intruso y dar la alarma, pero no pueden detenerlo ni identificar personas","Pueden identificar personas pero no detenerlas"],"correct":1},{"area":"E","text":"¿Cuál es el mejor método de identificación de personas?","opts":["La ficha de identificación de FFAA","El reconocimiento personal","Las listas o nóminas de personal autorizado"],"correct":1},{"area":"E","text":"En actividades terrestres, ¿sobre quién recae la responsabilidad primaria por el planeo de la prevención de incendios?","opts":["El Segundo Comandante","El Oficial de Seguridad","El Jefe del Departamento de Ingeniería"],"correct":1},{"area":"E","text":"Las comunicaciones interiores de una actividad naval son:","opts":["Las que unen a la actividad con fuentes externas de apoyo","Las de dos vías para el intercambio de información entre dos o más puntos dentro de una actividad naval","Solo el sistema de alarma de la instalación"],"correct":1},{"area":"E","text":"Las aberturas en la cerca (desagües, alcantarillas) de más de 625 cm² deben:","opts":["Ser eliminadas o cegadas completamente","Cerrarse con barrotes o telas metálicas que solo puedan abrirse desde adentro","Cubrirse con candados de alta seguridad"],"correct":1},{"area":"F","text":"Al confeccionar el rol de guardias, ¿cómo debe dividirse la división?","opts":["En dos secciones equilibradas","En tres secciones con igual cantidad de hombres y capacidades comparables","En cuatro secciones según especialidad"],"correct":1},{"area":"F","text":"La responsabilidad de preparar el rol de guardias recae sobre:","opts":["El Sub-Oficial de División, que lo elabora de forma independiente","El Oficial de División, aunque cada clase brinde ayuda inteligente en su confección","El Segundo Comandante del buque"],"correct":1},{"area":"F","text":"Los asientos del rol de guardias deben ser \u0027completos\u0027. Un ejemplo de asiento completo es:","opts":["Solo \u0027Pieza 31\u0027 o \u0027Grupo Rep. 2\u0027","\u0027Pza. 31 Cartucho caliente\u0027 o \u00272JZ, G Rep. 2\u0027 (indicando la función exacta)","Solo el nombre del marinero sin indicar el puesto"],"correct":1},{"area":"F","text":"El rol de guardias, zafarranchos y estaciones en lo relacionado con puestos de combate está basado en:","opts":["El Manual Orgánico del Buque solamente","El Manual de Organización de Combate del Buque solamente","Tanto en el Manual de Organización de Combate como en el Manual Orgánico del Buque"],"correct":2},{"area":"F","text":"Si al confeccionar el rol hay más hombres que puestos, ¿a quién se notifica?","opts":["Al Segundo Comandante","Al Oficial de Armas","Al Comandante del buque"],"correct":1},{"area":"F","text":"Los hombres extras en el rol frecuentemente son utilizados como:","opts":["Reserva para guardias de condición","Pasadores de munición o en los grupos de reparaciones de control de averías","Apoyo a las divisiones con menos personal"],"correct":1},{"area":"J","text":"Las prendas del vestuario de Sub-Oficiales están reguladas en:","opts":["El CR-04 Manual de Suministro y el Instructivo SERAP Nº 1/87","El CR-03 Manual de Seguridad Física","El Reglamento de Uniformes de la Armada Nacional"],"correct":0},{"area":"J","text":"Según el Instructivo SERAP Nº 1/87, al ascender a Sub-Oficial, ¿qué prendas NO se debitarán de las asignaciones como provisión especial?","opts":["Trajes de faena y gorros","Caponas y Distintivos Jerárquicos","Uniformes completos de gala"],"correct":1},{"area":"J","text":"Las prendas del vestuario de Cabos y Marineros que el Sub-Oficial ascendido no deba utilizar:","opts":["Puede conservarlas como uso personal","Las entregará a la Unidad para su recirculación","Las puede vender o donar al personal"],"correct":1},{"area":"J","text":"Si un Sub-Oficial no devuelve prendas de Cabo/Marinero con vigencia vigente:","opts":["Se le perdona automáticamente al ascender","Puede reclamársele su devolución y exigírsele el pago si no lo hace o están en malas condiciones","Debe esperar el próximo período de abastecimiento"],"correct":1},{"area":"K","text":"¿Qué factores determinan quién será ascendido entre los elegibles?","opts":["Solo la antigüedad en el grado","La nota del examen, la antigüedad, las calificaciones y las vacantes en la especialidad","Solo la recomendación del Comandante"],"correct":1},{"area":"K","text":"El Registro de Factores Prácticos es:","opts":["Un libro de notas del Oficial de División","Un formulario especial para asentar la ejecución satisfactoria de los factores prácticos","El historial académico del candidato"],"correct":1},{"area":"K","text":"¿Qué se recomienda antes de comenzar a estudiar intensamente el manual?","opts":["Memorizarlo de principio a fin","Hojear el libro para obtener una visión general, revisar la organización, luego estudiar intensamente por secciones","Estudiar directamente los factores del Apéndice I"],"correct":1},{"area":"K","text":"Los puestos más comunes del S/O de 2da. clase en tierra son:","opts":["Ayudante del oficial de división, S/O de instrucción y S/O de guardia","Oficial de División, Instructor y 2do Jefe de Pelotón","Oficial de Guardia, Comandante de Sección y Jefe de Pelotón"],"correct":1},{"area":"K","text":"La autoridad del S/O de 2da. clase puede ser:","opts":["Solo jerárquica sobre los de menor grado","De cargo o jerárquica; la de cargo descansa en el puesto que ocupa","Exclusivamente administrativa"],"correct":1},{"area":"K","text":"Al estudiar el manual, ¿qué se recomienda hacer en cada período de estudio?","opts":["Cubrir la cantidad de páginas que sea posible sin importar la comprensión","Tratar de cumplir una sección completa, escribiendo preguntas a medida que surjan y relacionando con la experiencia","Leer sin tomar notas para ahorrar tiempo"],"correct":1},{"area":"R","text":"El Manual Orgánico del buque incluye como mínimo:","opts":["Solo las reglamentaciones del buque","Descripción de la organización administrativa, roles del buque y reglamentaciones","Solo los roles operativos estándar"],"correct":1},{"area":"R","text":"¿Cuáles son los roles operativos estándar del Manual Orgánico?","opts":["Rol de Navegación, Rol de Combate y Rol de Emergencias","Rol Especial de Navegación, Reabastecimiento, Rescate y Asistencia, Grupo de Desembarco, Visita e Inspección/Dotación de Presa","Rol de Puerto, Rol de Navegación y Rol de Combate"],"correct":1},{"area":"R","text":"¿Cuáles son ejemplos de roles opcionales que pueden agregarse al Manual Orgánico?","opts":["Rol de Zafarrancho de Combate y Rol de Incendio","Rol de Remolque, Rol de Búsqueda en el Buque, Rol para Disturbios y Rol de Buque Silencioso","Rol de Guardia de Puerto y Rol de Navegación Especial"],"correct":1},{"area":"R","text":"Las divisiones administrativas abordo están establecidas de manera tal que:","opts":["Solo sirven para propósitos administrativos, sin función en combate","Pueden ser asignadas como unidades dentro de la organización de combate","Están subordinadas directamente al Segundo Comandante"],"correct":1},{"area":"R","text":"¿Para qué sirve principalmente el análisis de puestos en la Armada?","opts":["Para determinar el salario de cada puesto","Para determinar exactamente qué hace el hombre del puesto, qué responsabilidades tiene y qué conocimientos y destrezas necesita","Para evaluar el desempeño del personal en forma periódica"],"correct":1},{"area":"R","text":"Las tres operaciones ejecutivas de un análisis de puestos a bordo son llenar:","opts":["El Cuestionario de Análisis de Trabajo Naval, el Programa de Análisis de Trabajo Naval y los Requerimientos Físicos para Trabajo Naval","El Formulario de Dotación, el Registro de Destinos y la Hoja de Servicio","El Manual Orgánico, el Plan de Adiestramiento y el Registro de Factores Prácticos"],"correct":0},{"area":"R","text":"El Programa de Análisis de Trabajo Naval tiene:","opts":["5 secciones principales","11 secciones principales","15 secciones principales"],"correct":1},{"area":"R","text":"En un estudio de puestos en base ORGÁNICA se analiza:","opts":["Todos los trabajos de comunicaciones en varios tipos de buques","Todos los puestos de una repartición en particular o a bordo de un tipo de buque","Solo los trabajos individuales no relacionados"],"correct":1},{"area":"R","text":"En un estudio de puestos en base FUNCIONAL se analiza:","opts":["Todos los puestos de una sola unidad","Trabajos relacionados ocupacionalmente en varias actividades (ej. comunicaciones en distintos buques y estaciones)","Un solo puesto específico en una actividad particular"],"correct":1},{"area":"V","text":"Según el RSAB Art. 1052, al recibir la guardia, el S/O recibe una \u0027relación nominal\u0027. ¿Qué es una relación nominal?","opts":["Un resumen numérico del personal","Una lista por nombre, jerarquía y matrícula del personal involucrado","Un informe escrito del S/O saliente"],"correct":1},{"area":"V","text":"Según el RSAB Art. 1057, ¿de qué documento se entera el S/O de guardia de los que estuviesen sin servicio?","opts":["Del libro de guardia","Del parte de la enfermería","Del borrador de novedades del S/O saliente"],"correct":1},{"area":"V","text":"Según el RSAB Art. 1059, el S/O de guardia debe velar por la higiene, especialmente en:","opts":["Los camarotes de los Sub-Oficiales","Las cocinas y los jardines de la marinería","Todos los espacios del buque sin excepción"],"correct":1},{"area":"V","text":"Según el RSAB Art. 1062, si un visitante le inspira sospecha al S/O, debe:","opts":["Negarle el acceso de inmediato","Ponerlo en conocimiento del oficial de guardia","Retirarlo del buque por su propia cuenta"],"correct":1},{"area":"V","text":"Según el RSAB Art. 1064, ¿cuáles son algunos artículos cuya introducción a bordo el S/O debe vigilar que no ocurra?","opts":["Solo bebidas alcohólicas y explosivos","Bebidas alcohólicas, fósforos que no sean de seguridad, explosivos, naipes para azar, libros inmorales, figuras pornográficas, prendas no reglamentarias, armas, etc.","Solo armas y explosivos"],"correct":1},{"area":"V","text":"Según el RSAB Art. 1072, cuando se toque llamada (diana), el S/O debe:","opts":["Permanecer en su puesto junto al portalón","Recorrer las cubiertas inferiores y entrepuentes para verificar que todo el personal se ha levantado","Pasar lista en cubierta a toda la tripulación"],"correct":1},{"area":"V","text":"Según el RSAB Art. 1079, si no hubiera Guardia Marina, ¿quién lo reemplaza para las rondas internas de la noche?","opts":["El Cabo de Guardia","El Sub-Oficial de guardia, según las instrucciones del Oficial de guardia","El Sub-Oficial más antiguo a bordo"],"correct":1},{"area":"V","text":"Según la Guía Funcional del S/O de Guardia (Cap. 6), la \u0027Función Básica\u0027 del S/O de guardia es ser:","opts":["El responsable de la guardia militar y el portalón","El ayudante principal del oficial de guardia en el mantenimiento del orden, la policía interna, el control de la guardia y de los arrestados","El encargado de supervisar todos los departamentos a bordo"],"correct":1},{"area":"X","text":"¿Cómo define el CR-10 a la \u0027directiva\u0027?","opts":["Una comunicación militar en la que se establece una política o se ordena una acción específica","Un parte rutinario de novedades entre unidades","Un formulario administrativo para pedidos al SERAP"],"correct":0},{"area":"X","text":"La Orden Preparatoria se emplea cuando:","opts":["Se desea ejecutar una operación de inmediato","Se desea alertar a los comandos subordinados sobre acciones inminentes, dándoles tiempo para hacer sus planes y preparativos","Se quiere establecer una política general de largo plazo"],"correct":1},{"area":"X","text":"El Plan de Contingencia tiene como finalidad:","opts":["Cubrir una serie de operaciones militares de largo alcance","Acelerar la velocidad de reacción ante acaecimientos previsibles cuyo momento no está determinado","Proveer información sobre las características de un teatro de operaciones"],"correct":1},{"area":"X","text":"El formato de la directiva administrativa se divide en:","opts":["Propósito, Información y Ejecución","Encabezado, Cuerpo y Final (con posibles Anexos)","Asunto, Desarrollo y Conclusiones"],"correct":1},{"area":"X","text":"¿Cuántos tipos de archivo tienen las dependencias de la Armada Nacional?","opts":["Dos: archivo activo y archivo pasivo","Tres: Archivo de Comunicaciones, Archivo de Directivas Administrativas y Archivo de Trámite","Cuatro tipos de archivo por categoría de directiva"],"correct":1},{"area":"X","text":"¿Cómo se ordenarán las comunicaciones en el archivo?","opts":["Por orden alfabético del remitente","En forma cronológica, con emitidas y recibidas separadas","Por tipo de comunicación y número correlativo"],"correct":1},{"area":"X","text":"Cuando una directiva administrativa pierde vigencia:","opts":["Se mantiene en el archivo con una marca de derogada","Debe ser retirada del archivo y tachada en el índice","Se archiva en una carpeta histórica separada"],"correct":1},{"area":"X","text":"¿Cuál es la diferencia entre un \u0027Parte\u0027 y un \u0027Informe\u0027 según el CR-10?","opts":["El Parte se presenta verbalmente y el Informe siempre por escrito","El Parte suministra datos periódicos y rutinarios; el Informe es librado a solicitud del superior o a iniciativa de un subordinado sobre hechos del servicio","No hay diferencia según el CR-10, son términos intercambiables"],"correct":1},{"area":"X","text":"El principio de \u0027Objetividad\u0027 en la redacción de partes significa:","opts":["Que el parte sea lo más breve posible","Que presenta los hechos tal como son, sin opiniones personales y en forma imparcial","Que el parte desarrolle los temas en orden lógico"],"correct":1},{"area":"X","text":"La Planilla de Consumo Nº 1 corresponde a:","opts":["Combustibles y lubricantes para automotores","Artículos para higiene personal y limpieza","Vestuario y efectos de uso personal"],"correct":1},{"area":"X","text":"La Planilla Especial Nº 11 corresponde a:","opts":["Pinturas, pinceles y afines","Vestuario y efectos de uso personal","Artículos para higiene personal y limpieza"],"correct":1},{"area":"X","text":"El objetivo del SMP es:","opts":["Registrar las averías ocurridas para análisis futuro","La ejecución planificada de inspecciones cíclicas y trabajos de mantenimiento previstos, para mantener al máximo las posibilidades operativas de los equipos","Reducir el personal de mantenimiento asignado a cada departamento"],"correct":1},{"area":"X","text":"PEGT significa:","opts":["Programa de Evaluación de Grupos de Trabajo","Páginas de los Equipos de los Grupos de Trabajo","Planilla de Ejecución de Grupos de Trabajo"],"correct":1},{"area":"X","text":"PLME significa:","opts":["Programa de Lista de Mantenimiento Estándar","Página de Lista de Mantenimiento del Equipo","Plan de Lista de Mantenimiento por Equipos"],"correct":1},{"area":"X","text":"¿Qué indica en el PLME la frecuencia \u0027A/2\u0027?","opts":["Cada dos años","Semianual (dos veces por año)","Anual"],"correct":1},{"area":"X","text":"¿Qué indica en el PLME la frecuencia \u0027R\u0027?","opts":["Relativo o cuando la situación lo requiere (ej. cada 100 horas, antes de salir a navegar)","Rotativo, cuando el personal disponible permite","Reparación correctiva solamente"],"correct":0},{"area":"X","text":"¿Dónde se coloca la Planilla de Control de Programación Semanal (PCPS)?","opts":["En el archivo del Jefe de Departamento","En el Tablero de Información del Grupo de Trabajo","En la oficina del Oficial de Administración"],"correct":1},{"area":"X","text":"El personal de mantenimiento recaba diariamente sus tareas de:","opts":["La PCPM colocada en el Tablero de Información","La Planilla de Control de Programación Semanal (PCPS) colocada en el tablero de información","La TM que está en el pañol del departamento"],"correct":1},{"area":"X","text":"El Nivel de destreza 2 en el SMP corresponde a personal que puede:","opts":["Lubricar y limpiar (tareas básicas)","Probar, Operar, Ajustar y Cambiar equipos","Inspeccionar, Comprobar y Medir (mayor responsabilidad)"],"correct":1},{"area":"Y","text":"¿Cuáles son los tres tipos principales de hojas de instrucción en la Armada?","opts":["Hoja de Examen, Hoja de Trabajo y Hoja de Tarea","Hoja de Información, Hoja de Asignaciones y Hoja de Trabajo","Hoja de Instrucción, Hoja de Evaluación y Hoja de Práctica"],"correct":1},{"area":"Y","text":"La Hoja de Información está redactada para:","opts":["Suministrar directivas completas para la ejecución de una labor específica","Suministrar datos informativos y conceptos probados, generalmente basada en un solo tema","Dirigir la observación, lectura, ejercicio y solución de problemas"],"correct":1},{"area":"Y","text":"La Hoja de Asignaciones está destinada a:","opts":["Dar instrucciones paso a paso para ejecutar una tarea práctica","Dirigir la observación, lectura, ejercicio y solución de problemas; útil para el progreso individual","Presentar datos informativos sobre un área de estudio"],"correct":1},{"area":"Y","text":"En la Hoja de Trabajo, toda etapa que pueda implicar un peligro llevará insertada:","opts":["Una nota al pie de página en cursiva","La palabra CUIDADO en letras mayúsculas, seguida de las medidas de seguridad a observar","Una señal de advertencia en rojo al margen"],"correct":1},{"area":"Y","text":"La Hoja de Información no debe tener más de:","opts":["Una página","Dos o tres páginas como máximo","Cinco páginas"],"correct":1},{"area":"Y","text":"¿Cuántos tipos de ayudas a la enseñanza se mencionan según su apelación a los sentidos?","opts":["Dos: visuales y auditivas","Cuatro: recursos artificiales, visuales, audiovisuales y grabaciones","Tres: visuales, auditivas y táctiles"],"correct":1},{"area":"Y","text":"¿Qué es un \u0027Recurso Artificial de Enseñanza\u0027?","opts":["Un recurso u objeto preparado para simular la operación o función del equipo real (ej. entrenador Link)","Un cartel o lámina impreso artificialmente","Un proyector de transparencias o pantalla"],"correct":0},{"area":"Y","text":"El criterio \u0027Sentido\u0027 para evaluar una ayuda a la enseñanza significa:","opts":["Debe apelar al mayor número posible de sentidos físicos","Debe existir uniformidad de ideas, sin material inaplicable que confunda; no puede presentar demasiados detalles a la vez","Debe tener un sentido estético o artístico atractivo"],"correct":1},{"area":"Y","text":"El criterio \u0027Colorido\u0027 en una ayuda a la enseñanza se refiere a:","opts":["Debe ser colorida para atraer la atención sin importar el énfasis","Puede lograrse mediante diseño, color, movimiento y forma que sean atractivos, con énfasis en la idea importante","Solo requiere usar al menos tres colores distintos"],"correct":1},{"area":"Y","text":"El criterio \u0027Flexibilidad\u0027 en una ayuda a la enseñanza se refiere a:","opts":["Que pueda ser doblada o enrollada para guardarla","Que pueda ser modificada si cambian la situación o el contenido","Que pueda usarse en diferentes ambientes de iluminación"],"correct":1},{"area":"Y","text":"El criterio \u0027Visibilidad\u0027 en una ayuda a la enseñanza significa:","opts":["Que sea visible desde afuera del aula","Que aun el detalle importante más pequeño resulte suficientemente grande para ser visto por el alumno más distante","Que tenga colores vivos y brillantes"],"correct":1},{"area":"Y","text":"¿Qué es una prueba de ejecución?","opts":["Un examen escrito sobre procedimientos técnicos","Un ejemplo de situación de trabajo en el cual el hombre es probado en la ejecución de una tarea práctica","Una calificación semestral basada en la observación del superior"],"correct":1},{"area":"Y","text":"¿Por qué se dice que las pruebas de ejecución son \u0027objetivas\u0027?","opts":["Porque son confeccionadas por un panel de expertos imparciales","Porque cada hombre ejecuta la misma tarea bajo las mismas condiciones y es calificado exactamente de la misma forma","Porque eliminan el factor humano del proceso de evaluación"],"correct":1},{"area":"Y","text":"La prueba tipo \u0027Lista de Comprobación\u0027 se usa principalmente cuando:","opts":["Solo importa el resultado final del producto","Hay un examinador disponible que vigila al examinado mientras ejecuta una tarea compleja","Se tiene que evaluar a muchos hombres con pocos examinadores"],"correct":1},{"area":"Y","text":"La prueba tipo \u0027Asiento por el Examinado\u0027 es especialmente útil cuando:","opts":["Se quiere evaluar objetivamente el producto terminado","Se tiene que testar a una gran cantidad de hombres con solo unos pocos examinadores","La tarea a testar es sencilla y puede evaluarse en segundos"],"correct":1},{"area":"Y","text":"¿Qué mide una prueba de identificación?","opts":["La capacidad del examinado para memorizar procedimientos complejos","El reconocimiento visual de elementos, partes o componentes","La velocidad de ejecución de tareas prácticas"],"correct":1},{"area":"Z","text":"El Grupo B \u0027Necesarios\u0027 de la categoría de abastecimientos son:","opts":["Aquellos sin los cuales las unidades no pueden cumplir sus funciones","Aquellos que pueden prescindirse transitoriamente sin disminuir en forma sensible o inmediata la eficiencia","Aquellos cuyo suministro puede postergarse indefinidamente"],"correct":1},{"area":"Z","text":"¿Qué son las Planillas de Consumo?","opts":["Planillas especiales que se solicitan cada vez que se necesitan","Planillas donde se agrupan artículos cuya salida es regular en el tiempo, provistas sin pedido previo a plazos fijos en cantidades predeterminadas","Listados de artículos que el buque puede comprar en el mercado local"],"correct":1},{"area":"Z","text":"Los Suministros Reglamentarios son:","opts":["Los que se solicitan ante cualquier necesidad de la unidad","Los artículos y materiales necesarios para el funcionamiento o mantenimiento de la unidad, con símbolo de duración I","Los entregados en calidad de préstamo con fecha de devolución prevista"],"correct":1},{"area":"Z","text":"Los Suministros Provisorios son:","opts":["Se entregan artículos extraordinarios a gran costo","Se entregan artículos en calidad de préstamo por razones especiales, indicando la fecha de devolución prevista","Artículos cuyo costo debe ser reintegrado al SERAP en efectivo"],"correct":1},{"area":"Z","text":"Los suministros \u0027De Oficio\u0027 son aquellos que:","opts":["Se proveen solo mediante pedido previo del interesado usando el formulario SERAP N° 1000","No requieren pedido previo de las unidades; incluidos en las Planillas de Consumo","Requieren autorización del Gran Comando para ser provistos"],"correct":1},{"area":"Z","text":"Los pedidos \u0027GRAVES Y URGENTES\u0027 tienen la característica especial de que:","opts":["Son los únicos que pueden ser formulados verbalmente","Requieren sello y firma en rojo del Jefe del SERAP","Se procesan el día 10 de cada mes"],"correct":0},{"area":"Z","text":"Los pedidos \u0027NORMALES\u0027 al SERAP: ¿cuándo comienza su trámite interno?","opts":["Al día siguiente de su recepción","El día 10 de cada mes; en general son cumplidos dentro de los 20 días siguientes","En la fecha que el SERAP lo determine según disponibilidad"],"correct":1},{"area":"Z","text":"El formulario \u0027Solicitud de Materiales y Servicios\u0027 tiene cuatro vías de diferente color. ¿Cuáles son?","opts":["Blanco, amarillo, verde y azul","Amarillo, verde, celeste y rosado","Rojo, azul, verde y amarillo"],"correct":1},{"area":"Z","text":"¿Cuántas solicitudes SERAP se usan por cada pedido?","opts":["Una solicitud puede incluir varios tipos de material","Una solicitud por cada tipo de material o servicio, independientemente de la cantidad","Depende del monto total del pedido"],"correct":1},{"area":"Z","text":"Todos los efectos que abastece el SERAP son propiedad de:","opts":["La Armada Nacional hasta que son entregados al usuario","El Estado, hasta su consumo, devolución o justificada inversión; sin autorización superior no pueden venderse ni prestarse","El SERAP hasta que son pagados por la unidad solicitante"],"correct":1},{"area":"Z","text":"Los Suministros Extraordinarios son, por definición:","opts":["Los artículos de uso frecuente provisionados de oficio","Todos aquellos que no son reglamentarios, incluyendo los de símbolo de duración P y los reglamentarios solicitados antes de vencer su plazo","Solo los artículos de gran costo y baja frecuencia de uso"],"correct":1},{"area":"Z","text":"Las tres funciones principales del liderazgo del Sub-Oficial son:","opts":["Dar órdenes, supervisar y castigar","Mantener elevada la moral del grupo, proporcionar supervisión técnica y cumplir funciones administrativas","Planificar, organizar y controlar"],"correct":1},{"area":"Z","text":"¿Qué tipo de necesidades son las más básicas según la jerarquía de Maslow?","opts":["Necesidades de seguridad","Necesidades fisiológicas (supervivencia)","Necesidades sociales"],"correct":1}]
+
+
+const PRACTICOS = [{"id":"E.1.41/42","titulo":"Seguridad Física","escenario":"Te presentan un escenario: \"Sos el S/O de guardia y llega personal nuevo. Explicale las medidas de seguridad.\" Debes demostrar que sabés transmitir las medidas de Seguridad Física (acceso, perimetro, control de personas, incendios, comunicaciones, sabotaje, disturbios) y verificar su cumplimiento durante la supervision de la guardia.","preguntas":[{"text":"Al controlar el acceso al buque/instalacion, un visitante debe:","opts":["Presentar su credencial y firmar el libro, siendo escoltado por un tripulante en todo momento","Solo mostrar su cedula de identidad al oficial de guardia","Anunciarse por radio VHF y esperar autorizacion"],"correct":0},{"text":"Cual es la primera linea de defensa perimetral segun las medidas de Seguridad Fisica?","opts":["Las camaras de vigilancia perimetral","Las cercas/barreras","Los centinelas armados en cada acceso"],"correct":1},{"text":"Si se detecta una cerca o barrera danada, el S/O debe:","opts":["Ignorarla si no es urgente","Reportarla inmediatamente","Repararla personalmente"],"correct":1},{"text":"Ante un principio de incendio en un equipo electrico, que accion NO debe tomarse?","opts":["Usar extintor adecuado","Usar agua","Cortar la fuente de energia"],"correct":1},{"text":"Las areas vitales como santabarbara y maquinas tienen:","opts":["Acceso libre para todo el personal","Acceso restringido, no dejar entrar a nadie sin autorizacion","Acceso solo para Oficiales"],"correct":1},{"text":"Durante la supervision de la guardia, si un centinela no sabe su consigna, el S/O debe:","opts":["Anotarlo en novedades y reportarlo al Oficial de Guardia","Ensenarle la consigna y anotarlo en novedades","Relevarlo inmediatamente"],"correct":1}]},{"id":"F.1.41","titulo":"Confeccionar y mantener rol de guardias","escenario":"Te dan una lista de personal y tenes que hacer el rol de guardias desde cero. Debes demostrar que sabes armarlo (3 secciones, en tinta/lapiz, asientos completos) y actualizarlo correctamente (altas/bajas, equilibrio entre secciones).","preguntas":[{"text":"La division se divide en:","opts":["2 secciones","3 secciones","4 secciones"],"correct":1},{"text":"En el rol de guardias, el N° de puesto, jerarquia y especialidad se anotan:","opts":["En lapiz","En tinta","Depende del criterio del S/O"],"correct":1},{"text":"En el rol de guardias, el nombre del hombre que ocupa el puesto se anota:","opts":["En lapiz","En tinta","No se anota, se asigna verbalmente"],"correct":0},{"text":"Si sobran hombres en la dotacion al confeccionar el rol, se debe:","opts":["Dejarlos sin puesto asignado","Notificar al Oficial de Armas para reasignar","Asignarlos a puestos duplicados"],"correct":1},{"text":"Los asientos del rol deben ser:","opts":["Solo el numero de puesto","Completos, ej. 'Pza. 31 Cartucho caliente'","Solo la denominacion del puesto"],"correct":1},{"text":"Al confeccionar el rol, se debe verificar contra:","opts":["El libro de guardia anterior","El Manual Organico (roles de busqueda, disturbios, etc.)","La orden del dia"],"correct":1}]},{"id":"K.1.41","titulo":"Explicar como prepararse para ascenso","escenario":"Un subordinado te pregunta como prepararse para ascender. Debes orientarlo sobre los 5 requisitos (antiguedad, factores practicos, recomendacion, examen, especialidad) y el metodo de estudio.","preguntas":[{"text":"Para cualificar para el ascenso se necesitan 5 requisitos. Cual de los siguientes NO es uno de ellos?","opts":["Antiguedad","Examen sobre Requerimientos Militares y Profesionales","Tener un titulo universitario"],"correct":2},{"text":"Donde se asientan los factores practicos aprobados?","opts":["En la Libreta de Servicio Naval","En el Registro de Factores Practicos","En el legajo personal del subordinado"],"correct":1},{"text":"El metodo de estudio recomendado consiste en:","opts":["Leer solo resumenes hechos por otros","Primero leer rapido el manual completo, luego estudiar por secciones completas escribiendo preguntas a mano y relacionando con experiencias a bordo","Memorizar preguntas y respuestas de examenes anteriores"],"correct":1},{"text":"Los factores del Apendice I son el minimo. Que conviene hacer?","opts":["Estudiar solo el Apendice I","Estudiar mas alla del Apendice I para tener ventaja","No estudiar los factores teoricos"],"correct":1},{"text":"Para el repaso final, si no podes explicar un tema:","opts":["Lo dejas para despues","No lo sabes, repasalo","Lo memorizas sin entenderlo"],"correct":1},{"text":"El examinado debe cualificar para:","opts":["Solo su especialidad actual","Todas las especialidades de la jerarquia a la que aspira y las inferiores","Solo las especialidades superiores"],"correct":1}]},{"id":"R.1.41","titulo":"Identificar roles operativos en el Manual Organico","escenario":"Te entregan un Manual Organico y debes buscar y reconocer los 9 roles operativos. Debes indicar para que sirve cada uno, quien va a cada puesto y bajo que condicion de alistamiento se activa.","preguntas":[{"text":"Cual de los siguientes es un rol operativo del Manual Organico?","opts":["Rol de Navegacion Nocturna","Rol Especial de Navegacion (entrada/salida de puerto)","Rol de Mantenimiento de Maquinas"],"correct":1},{"text":"El Rol de Reabastecimiento se usa para:","opts":["Pasar combustible entre buques","Abastecer viveres en puerto","Cargar municion de artilleria"],"correct":0},{"text":"El Rol de Buque Silencioso se utiliza para:","opts":["Navegar sin ser detectado","Salir de puerto sin hacer ruido","Pasar una inspeccion sin novedades"],"correct":0},{"text":"El Rol de Visita e Inspeccion se usa para:","opts":["Recibir visitas a bordo","Interceptar e interdictar otro buque","Inspeccionar el buque propio"],"correct":1},{"text":"El Rol de Grupo de Desembarco se usa para:","opts":["Operaciones anfibias","Bajar personal en puerto","Evacuacion del buque"],"correct":0},{"text":"Para cada rol, ademas de identificar los puestos, se debe senalar:","opts":["El sueldo de cada puesto","La condicion de alistamiento bajo la que se activa","El nombre del hombre asignado permanentemente"],"correct":1}]},{"id":"R.1.42","titulo":"Reunir informacion para analisis de puesto","escenario":"Te dan un puesto para analizar (ej. 'Cocinero'). Debes demostrar que sabes como se analiza un puesto naval usando los 3 formularios (Cuestionario, Programa de Analisis, Requerimientos Fisicos) y los 3 metodos de recoleccion.","preguntas":[{"text":"Los tres formularios para analizar un puesto naval son: Cuestionario, Programa de Analisis y:","opts":["Requerimientos Fisicos","Evaluacion de Desempeno","Planilla de Dotacion"],"correct":0},{"text":"El Programa de Analisis tiene 11 secciones. Cual de las siguientes esta entre ellas?","opts":["Historial de accidentes del ocupante","Deberes del puesto","Registro de asistencia"],"correct":1},{"text":"Ademas del Cuestionario, una de las secciones del Programa de Analisis es:","opts":["Presupuesto del puesto","Cualificaciones requeridas","Horario del ocupante"],"correct":1},{"text":"Para recolectar informacion de un puesto, ademas de leer el cuestionario y entrevistar al ocupante y supervisor, se debe:","opts":["Observar al ocupante trabajando sin interferir","Pedir referencias laborales del ocupante","Revisar el legajo personal del ocupante"],"correct":0},{"text":"En la entrevista al supervisor, se debe preguntar:","opts":["Que horario tiene el ocupante","Que espera del ocupante y que problemas hay","Donde vive el ocupante"],"correct":1}]},{"id":"V.1.41","titulo":"Cubrir puesto de S/O de guardia (S/O de Policia)","escenario":"Son las 07:55. Llegas al buque para asumir la guardia como S/O de Policia (guardia de 08:00 a 20:00). Debes recibir del saliente, hacer rondas diurnas/nocturnas, controlar el servicio y actuar ante faltas.","preguntas":[{"text":"Al asumir la guardia, el S/O debe recibir del saliente:","opts":["Solo las llaves y el radio de comunicaciones","Lista de ausentes, enfermos, castigados, tenida ordenada y consignas especiales","El libro de guardia unicamente"],"correct":1},{"text":"Durante la ronda nocturna, el S/O debe verificar:","opts":["Solo que los centinelas esten despiertos","Panoles cerrados, luces apagadas, fuegos apagados, personal acostado y castigados en su lugar","Que no haya ruidos extranos en el buque"],"correct":1},{"text":"Ante una falta leve de un subordinado, el S/O debe:","opts":["Dar parte al Oficial de Guardia inmediatamente","Decir 'Cabo, llame la atencion a este hombre'","Anotarlo en novedades y no actuar"],"correct":1},{"text":"Si un infractor es de mayor grado que el S/O, se debe:","opts":["Ignorar la falta para evitar conflictos","Hacerle presente su consigna y si no atiende, dar parte","Llamar directamente al Comandante"],"correct":1},{"text":"Con los castigados, el S/O debe:","opts":["Dejarlos en libertad condicional","Formarlos y pasarles lista, dando cuenta al Guardia Marina","Asignarles tareas de limpieza"],"correct":1},{"text":"Al final de la guardia, el S/O debe:","opts":["Irse y dejar que el relevo pregunte lo necesario","Dejar todo anotado en el borrador de novedades para el que lo releva","Entregar solo las llaves al relevo"],"correct":1}]},{"id":"X.1.41","titulo":"Catalogacion y rotulacion CR-10","escenario":"Te dan una directiva para archivar o recuperar segun el sistema CR-10. Debes demostrar que sabes clasificar (comunicacion vs directiva administrativa), archivar (vigentes/derogadas) y rotular correctamente.","preguntas":[{"text":"Una comunicacion recibida se archiva:","opts":["Por orden alfabetico del remitente","En orden cronologico (emitidas y recibidas separadas)","Por tipo de directiva y numero correlativo"],"correct":1},{"text":"Si una directiva administrativa esta derogada, se debe:","opts":["Dejarla en el archivo con una marca de 'derogada'","Sacarla del archivo y tacharla del indice","Conservarla en un archivo historico aparte"],"correct":1},{"text":"Si no se sabe donde esta una directiva, se busca en:","opts":["El archivo de derogadas","El indice (CR-10, Capitulo 6)","El libro de guardia"],"correct":1},{"text":"La rotulacion de una directiva debe incluir: Unidad originadora, titulo, numero, de, para, asunto y:","opts":["Firma del Comandante","Fecha/hora","Sello de la unidad"],"correct":1},{"text":"El acceso al archivo de directivas esta restringido a:","opts":["Todo el personal de la unidad","Solo personal autorizado","Sub-Oficiales y Oficiales unicamente"],"correct":1}]},{"id":"X.1.42","titulo":"Confeccionar partes reglamentarios","escenario":"Debes redactar un parte militar correctamente. Te dan un escenario y tenes que aplicar la estructura (encabezado, proposito, desarrollo, novedades, firma) y los 6 principios.","preguntas":[{"text":"Son principios de un parte militar: Unidad, Exactitud, Claridad, Coherencia, Objetividad y:","opts":["Concision","Completo","Puntualidad"],"correct":1},{"text":"El principio de Unidad significa:","opts":["Que el parte sea escrito por una sola persona","Un tema por parte","Que todos los implicados esten unidos"],"correct":1},{"text":"El principio de Exactitud en un parte significa:","opts":["Que el parte sea breve","Que los datos sean precisos","Que el lenguaje sea formal"],"correct":1},{"text":"El principio de Coherencia significa:","opts":["Que tenga ortografia correcta","Orden logico en la exposicion","Que sea coherente con el reglamento"],"correct":1},{"text":"Un parte debe responder como minimo: que paso, cuando, donde y:","opts":["Quienes participaron","La opinion del redactor","Las recomendaciones del S/O"],"correct":0}]},{"id":"X.1.43","titulo":"Preparar y supervisar un programa SMP","escenario":"Te asignan un equipo (ej. grupo electrogeno) y debes implementar el Sistema de Mantenimiento Preventivo: Fase 1 (PEGT, PLME, TM), Fase 2 (PCPA, PCPM, PCPS) y Fase 3 (ejecucion y supervision).","preguntas":[{"text":"La frecuencia 'D' en una PLME corresponde a:","opts":["Diario","Disponible segun demanda","Diferido"],"correct":0},{"text":"La frecuencia 'S' en una PLME corresponde a:","opts":["Semanal","Siempre que sea necesario","Segun disponibilidad"],"correct":0},{"text":"La frecuencia 'M' en una PLME corresponde a:","opts":["Mensual","Manual","Mecanico"],"correct":0},{"text":"El Nivel de Destreza 1 significa:","opts":["Puede realizar la tarea con supervision","Puede realizar la tarea sin supervision","Puede instruir a otros"],"correct":0},{"text":"La PCPS (Programacion de Control Personal Supervisor) indica:","opts":["Que tareas se hacen cada dia de la semana","Que tareas se hacen cada mes del ano","El personal disponible para cada tarea del mes"],"correct":0},{"text":"Como Supervisor del SMP, usted debe:","opts":["Ejecutar todas las tareas de mantenimiento personalmente","Verificar que el personal use la TM y marcar las tareas completadas","Reprogramar solo las tareas de Nivel 3 que quedaron pendientes"],"correct":1}]},{"id":"Y.1.41","titulo":"Preparar hojas de instruccion","escenario":"Debes crear una hoja de instruccion para tu division. Te dan un tema y debes elegir el tipo de hoja adecuado (Trabajo, Informacion o Asignaciones) y estructurarla correctamente con CUIDADO en pasos peligrosos.","preguntas":[{"text":"La hoja de instruccion que se usa para que el alumno EJECUTE algo es:","opts":["Hoja de Informacion","Hoja de Trabajo","Hoja de Asignaciones"],"correct":1},{"text":"La palabra 'CUIDADO' en una Hoja de Trabajo debe aparecer:","opts":["En negrita y mayuscula en cada paso peligroso","En cursiva al inicio de la hoja","Solo si hay riesgo de muerte"],"correct":0},{"text":"Una Hoja de Informacion debe tener como maximo:","opts":["5 paginas","2-3 paginas","1 pagina"],"correct":1},{"text":"La Hoja de Asignaciones se usa cuando:","opts":["Se quiere que ejecuten una tarea practica","Se quiere que investiguen o lean algo por su cuenta","Se quiere evaluar conocimientos"],"correct":1},{"text":"Ademas del procedimiento, una Hoja de Trabajo debe incluir:","opts":["El sueldo del instructor","Herramientas, materiales, CUIDADO, cuestionario y referencias","La lista de aprobados"],"correct":1}]},{"id":"Y.1.42","titulo":"Supervisar ayudas a la ensenanza","escenario":"Te muestran una ayuda a la ensenanza (lamina, video, maqueta, pizarron). Debes evaluarla aplicando los 5 criterios (Sentido, Colorido, Flexibilidad, Oportunidad, Visibilidad) y recomendar mejoras.","preguntas":[{"text":"Uno de los 5 criterios para evaluar una ayuda a la ensenanza es:","opts":["Oportunidad","Precio","Durabilidad"],"correct":0},{"text":"El criterio 'Sentido' evalua:","opts":["Que la ayuda tenga sentido del humor","Que la ayuda muestre una sola idea","Que la ayuda tenga coherencia logica"],"correct":1},{"text":"El criterio 'Visibilidad' evalua:","opts":["Que la ayuda sea visible para el alumno del fondo","Que la ayuda tenga colores vistosos","Que la ayuda sea visible desde afuera del aula"],"correct":0},{"text":"Para ensenar un concepto abstracto, la ayuda mas adecuada es:","opts":["Un objeto real o modelo tridimensional","Un diagrama o grafico","Un texto escrito"],"correct":1},{"text":"El criterio 'Oportunidad' se refiere a:","opts":["Que la ayuda este disponible cuando se necesita","Que se use en el momento justo de la instruccion","Que la ayuda sea oportuna para la situacion"],"correct":1}]},{"id":"Y.1.43","titulo":"Pruebas de ejecucion","escenario":"Te piden evaluar una tarea practica (ej. 'cambiar una manguera de incendio'). Debes disenar la prueba segun el tipo adecuado: Producto Terminado, Lista de Comprobacion, Asiento por el Examinado o Combinada.","preguntas":[{"text":"Que tipo de prueba de ejecucion se usa cuando solo importa el resultado final?","opts":["Lista de Comprobacion","Producto Terminado","Asiento por el Examinado"],"correct":1},{"text":"La Lista de Comprobacion es adecuada cuando:","opts":["Solo importa el resultado final","El procedimiento importa (pasos en orden y seguridad)","Hay muchos examinados y un solo evaluador"],"correct":1},{"text":"La prueba Combinada se usa cuando:","opts":["Se evalua solo el resultado","Se evalua procedimiento Y resultado","Se evalua solo el procedimiento"],"correct":1},{"text":"El 'Asiento por el Examinado' se usa cuando:","opts":["Hay un solo examinado","Hay muchos examinados y un solo evaluador","Se evalua solo el producto final"],"correct":1},{"text":"Durante una prueba de ejecucion, el evaluador debe:","opts":["Dar instrucciones mientras el examinado trabaja","Controlar el tiempo y no intervenir (excepto por seguridad)","Corregir al examinado en cada paso"],"correct":1},{"text":"Antes de comenzar la prueba, el evaluador debe:","opts":["Empezar inmediatamente para no perder tiempo","Dar instrucciones claras antes de empezar","Solo decir 'empiece'"],"correct":1}]},{"id":"Y.1.44","titulo":"Pruebas de identificacion","escenario":"Debes disenar una prueba para medir reconocimiento visual de elementos. Te dan un material (lamina, objeto real o diagrama) y debes numerar elementos, preparar hoja de respuestas y definir el criterio de aprobacion.","preguntas":[{"text":"Una prueba de identificacion mide:","opts":["La capacidad de recordar procedimientos complejos","El reconocimiento visual de elementos","La velocidad de ejecucion de tareas practicas"],"correct":1},{"text":"El criterio de aprobacion tipico para una prueba de identificacion es:","opts":["50% correcto","70% correcto","100% correcto"],"correct":1},{"text":"Una variante de la prueba de identificacion es la de:","opts":["Correspondencia (unir con flechas cada elemento con su nombre)","Ensayo escrito sobre el tema","Exposicion oral del examinado"],"correct":0},{"text":"La variante 'Ubicacion' consiste en:","opts":["Escribir el nombre de cada elemento senalado","Mostrar donde va determinada pieza o elemento","Dibujar el elemento desde cero"],"correct":1},{"text":"La hoja de respuestas de una prueba de identificacion debe incluir:","opts":["Instrucciones claras, numeros y espacios para escribir","Solo los numeros sin instrucciones","Un texto explicativo del tema"],"correct":0}]},{"id":"Z.1.41","titulo":"Pedido SERAP (Formulario N° 1000)","escenario":"Te piden realizar un pedido de abastecimiento (ej. '5 trajes de faena'). Debes llenar el formulario SERAP N° 1000, determinar la prioridad (Normal, Especial o Urgente) y saber quien firma.","preguntas":[{"text":"Que formulario se usa para el pedido SERAP de abastecimiento?","opts":["Formulario N° 500","Formulario N° 1000","Formulario N° 2000"],"correct":1},{"text":"Las prendas de vestuario se solicitan mediante:","opts":["Planilla de consumo (llega automaticamente)","Planilla Especial N° 11 (hay que pedirlo)","Pedido directo verbal al deposito"],"correct":1},{"text":"Una prioridad Especial requiere:","opts":["Esperar al dia 10 del mes","Presentarlo cuando surja la necesidad, con anexo justificativo","Firma en rojo y tramite inmediato"],"correct":1},{"text":"Una prioridad Urgente en SERAP requiere:","opts":["Esperar al dia 10 del mes para procesarlo","Firma en rojo y tramite inmediato por funcionario asignado","Aprobacion del Comandante en Jefe de la Armada"],"correct":1},{"text":"Quien firma y sella el formulario SERAP?","opts":["El S/O que prepara el formulario","El Comandante/Jefe de la unidad","El Oficial de Abastecimiento"],"correct":1},{"text":"Que error hace perder puntos en un pedido SERAP?","opts":["Poner la fecha del dia","Poner dos materiales diferentes en un mismo formulario","Usar el formulario correcto"],"correct":1}]},{"id":"Z.1.42","titulo":"Liderazgo flexible","escenario":"Te plantean una situacion de liderazgo. Debes analizar la situacion (emergencia? personal inexperto? tiempo para deliberar?) y elegir el estilo correcto (autocratico, democratico o flexible), justificando tu eleccion segun la situacion y mencionando Maslow.","preguntas":[{"text":"Si hay un incendio (emergencia, poco tiempo, alto riesgo), el estilo de liderazgo adecuado es:","opts":["Democratico","Autocratico","Flexible con consulta al equipo"],"correct":1},{"text":"Si hay tiempo para deliberar y el personal es competente, el estilo adecuado es:","opts":["Autocratico","Democratico","Laissez-faire"],"correct":1},{"text":"Si el personal es inexperto o no sabe que hacer, el estilo adecuado es:","opts":["Democratico para que aprendan","Autocratico/Directivo","Flexible sin intervenir"],"correct":1},{"text":"El lider flexible es el mas eficaz porque:","opts":["Usa siempre el mismo estilo de liderazgo","Se adapta a la situacion y al personal","Delega todas las decisiones en el equipo"],"correct":1},{"text":"Segun Maslow, si la gente tiene miedo (seguridad amenazada):","opts":["Necesitan libertad para decidir","Necesitan un lider firme que los proteja","Necesitan reconocimiento y elogios"],"correct":1},{"text":"Segun Maslow, si la gente esta desmotivada:","opts":["Necesitan mas trabajo","Necesitan reconocimiento (ego/estima) o pertenencia al grupo (sociales)","Necesitan un castigo"],"correct":1}]}]
+
+const AREA_COLORS = {"C":"#e74c3c","E":"#2ecc71","F":"#3498db","J":"#9b59b6","K":"#1abc9c","M":"#f1c40f","R":"#e67e22","V":"#34495e","X":"#f39c12","Y":"#16a085","Z":"#c0392b"};
+const AREA_NAMES = {
+  "C": "Códigos y Reglamentos Militares",
+  "E": "Inteligencia / Seguridad Física",
+  "F": "Rol de Guardias",
+  "J": "Uniformes",
+  "K": "Información sobre la Carrera",
+  "M": "Liderazgo y Administración",
+  "R": "Organización",
+  "V": "Guardias",
+  "X": "Detall",
+  "Y": "Adiestramiento",
+  "Z": "Administración y Supervisión"
+};
+
+
+let questions = [];
+let practico = null;
+let modo = 'examen';
+let areasSeleccionadas = {};
+let timerSegundos = 0;
+let timerInterval = null;
+let timerPausado = false;
+let qActual = 0;
+let respuestas = {};
+let respuestasPractico = {};
+let practicoRespondido = false;
+let vista = 'teoria'; // 'teoria' | 'practico'
+let examenEnCurso = false;
+let practicoAccedido = false;
+const TIEMPO_EXAMEN = 6000; // 100 minutos
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function toggleTheme() {
+  document.body.classList.toggle('dark');
+  const btn = document.getElementById('themeBtn');
+  btn.textContent = document.body.classList.contains('dark') ? '☾' : '☀';
+  localStorage.setItem('simulacro-theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+}
+
+function loadTheme() {
+  if (localStorage.getItem('simulacro-theme') === 'dark') {
+    document.body.classList.add('dark');
+    document.getElementById('themeBtn').textContent = '☾';
+  }
+  // Restore saved repaso areas
+  var saved = localStorage.getItem('simulacro-repaso-areas');
+  if (saved) {
+    try { areasSeleccionadas = JSON.parse(saved); } catch(e) { initAllAreas(); }
+  } else {
+    initAllAreas();
+  }
+}
+
+function initAllAreas() {
+  Object.keys(AREA_NAMES).forEach(function(a) { areasSeleccionadas[a] = true; });
+}
+
+function cambiarModo(nuevo) {
+  modo = nuevo;
+  document.getElementById('btnModoExamen').className = 'mode-btn' + (nuevo === 'examen' ? ' active' : '');
+  document.getElementById('btnModoRepaso').className = 'mode-btn' + (nuevo === 'repaso' ? ' active' : '');
+  document.getElementById('areaFilter').className = nuevo === 'repaso' ? 'area-filter' : 'area-filter hidden';
+  if (nuevo === 'repaso') renderAreaPills();
+}
+
+function renderAreaPills() {
+  var container = document.getElementById('areaPills');
+  var colors = AREA_COLORS;
+  var html = '';
+  Object.keys(AREA_NAMES).forEach(function(a) {
+    var active = areasSeleccionadas[a];
+    var count = ALL_QUESTIONS.filter(function(q) { return q.area === a; }).length;
+    html += '<span class="area-pill ' + (active ? 'active' : 'inactive') + '" style="background:' + colors[a] + ';border-color:' + colors[a] + '" onclick="toggleArea(\x27' + a + '\x27)">' + a + ' (' + count + ')</span>';
+  });
+  html += '<span style="font-size:0.75em;margin-left:6px;cursor:pointer;color:var(--accent);" onclick="selectAllAreas(true)">Todo</span>';
+  html += '<span style="font-size:0.75em;margin-left:4px;cursor:pointer;color:var(--accent);" onclick="selectAllAreas(false)">Ninguno</span>';
+  container.innerHTML = html;
+}
+
+function toggleArea(area) {
+  areasSeleccionadas[area] = !areasSeleccionadas[area];
+  localStorage.setItem('simulacro-repaso-areas', JSON.stringify(areasSeleccionadas));
+  renderAreaPills();
+}
+
+function selectAllAreas(select) {
+  Object.keys(AREA_NAMES).forEach(function(a) { areasSeleccionadas[a] = select; });
+  localStorage.setItem('simulacro-repaso-areas', JSON.stringify(areasSeleccionadas));
+  renderAreaPills();
+}
+
+function initAccionBotones() {
+  document.getElementById('btnIniciar').addEventListener('click', iniciar);
+  document.getElementById('btnCancelar').addEventListener('click', cancelarExamen);
+  document.getElementById('btnPausar').addEventListener('click', pausarTimer);
+  document.getElementById('btnCorregir').addEventListener('click', corregirTeoria);
+  document.getElementById('btnCorregirPractico').addEventListener('click', function() {
+    if (!practicoAccedido) {
+      toast('Primero accedé a la vista Práctico (📋 Práctico) para responder el factor práctico.', 'warning');
+      return;
+    }
+    corregirPracticoVisible();
+  });
+  document.getElementById('btnToggleVista').addEventListener('click', toggleVista);
+  document.getElementById('btnModoExamen').addEventListener('click', function() { cambiarModo('examen'); });
+  document.getElementById('btnModoRepaso').addEventListener('click', function() { cambiarModo('repaso'); });
+  document.getElementById('themeBtn').addEventListener('click', toggleTheme);
+}
+
+function bloquearBotones(bloquear) {
+  document.getElementById('accionesOverlay').classList.toggle('hidden', !bloquear);
+  document.getElementById('btnCancelar').classList.toggle('hidden', !bloquear);
+  if (!bloquear) {
+    document.getElementById('btnCorregirPractico').style.display = practicoAccedido ? '' : 'none';
+  } else {
+    document.getElementById('btnCorregirPractico').style.display = '';
+  }
+}
+
+function finalizarExamen() {
+  if (!examenEnCurso) return;
+  examenEnCurso = false;
+  detenerTimer();
+  bloquearBotones(false);
+}
+
+function cancelarExamen() {
+  finalizarExamen();
+  document.getElementById('resultContainer').classList.add('hidden');
+  document.getElementById('resultPracticoContainer').classList.add('hidden');
+  var respondidas = Object.keys(respuestas).length;
+  document.getElementById('countInfo').textContent = 'Examen suspendido — ' + respondidas + ' respondidas';
+}
+
+function iniciarTimer(segundos) {
+  detenerTimer();
+  timerSegundos = segundos;
+  timerPausado = false;
+  document.getElementById('btnPausar').textContent = 'Pausar';
+  actualizarTimerDisplay();
+  timerInterval = setInterval(function() {
+    if (!timerPausado) {
+      timerSegundos--;
+      actualizarTimerDisplay();
+      if (timerSegundos <= 0) {
+        finalizarExamen();
+        corregirTeoria();
+      }
+    }
+  }, 1000);
+}
+
+function pausarTimer() {
+  timerPausado = !timerPausado;
+  document.getElementById('btnPausar').textContent = timerPausado ? 'Reanudar' : 'Pausar';
+  if (!timerPausado) actualizarTimerDisplay();
+}
+
+function detenerTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+  timerPausado = false;
+}
+
+function actualizarTimerDisplay() {
+  var el = document.getElementById('timerDisplay');
+  if (!el) return;
+  var mins = Math.floor(timerSegundos / 60);
+  var segs = timerSegundos % 60;
+  var str = '';
+  if (mins >= 60) {
+    var hrs = Math.floor(mins / 60);
+    mins = mins % 60;
+    str = hrs.toString().padStart(2, '0') + ':' + mins.toString().padStart(2, '0') + ':' + segs.toString().padStart(2, '0');
+  } else {
+    str = mins.toString().padStart(2, '0') + ':' + segs.toString().padStart(2, '0');
+  }
+  el.textContent = '⏱ ' + str;
+  el.className = '';
+  if (timerSegundos > 300) el.classList.add('timer-ok');
+  else if (timerSegundos > 60) el.classList.add('timer-warn');
+  else el.classList.add('timer-danger');
+}
+
+function iniciar() {
+  if (examenEnCurso) return;
+  detenerTimer();
+  examenEnCurso = true;
+  practicoAccedido = false;
+  respuestas = {};
+  respuestasPractico = {};
+  qActual = 0;
+  vista = 'teoria';
+  document.getElementById('btnToggleVista').textContent = '📋 Práctico';
+  practicoRespondido = false;
+  document.getElementById('resultContainer').classList.add('hidden');
+  document.getElementById('resultPracticoContainer').classList.add('hidden');
+  document.getElementById('practicoContainer').innerHTML = '';
+  document.getElementById('questionsContainer').innerHTML = '';
+  bloquearBotones(true);
+  if (modo === 'examen') {
+    questions = shuffle([...ALL_QUESTIONS]).slice(0, 100);
+    document.getElementById('countInfo').textContent = '250 en banco - 100 por intento';
+    iniciarTimer(TIEMPO_EXAMEN);
+    document.getElementById('timerDisplay').classList.remove('hidden');
+    document.getElementById('btnPausar').classList.remove('hidden');
+  } else {
+    var areas = Object.keys(areasSeleccionadas).filter(function(a) { return areasSeleccionadas[a]; });
+    if (areas.length === 0) {
+      Object.keys(AREA_NAMES).forEach(function(a) { areasSeleccionadas[a] = true; });
+      areas = Object.keys(AREA_NAMES);
+      renderAreaPills();
+    }
+    questions = ALL_QUESTIONS.filter(function(q) { return areasSeleccionadas[q.area]; }).map(function(q) { return Object.assign({}, q); });
+    document.getElementById('countInfo').textContent = 'Repaso - ' + areas.length + ' area(s) - ' + questions.length + ' preguntas';
+    document.getElementById('timerDisplay').classList.add('hidden');
+    document.getElementById('btnPausar').classList.add('hidden');
+  }
+  questions.forEach(function(q, i) { q.shuffledIndex = i; });
+  practico = PRACTICOS[Math.floor(Math.random() * PRACTICOS.length)];
+  mostrarPregunta();
+}
+
+function toggleVista() {
+  if (examenEnCurso) return;
+  if (vista === 'teoria') {
+    practicoAccedido = true;
+    vista = 'practico';
+    document.getElementById('btnToggleVista').textContent = '← Teoría';
+    document.getElementById('progressWrap').classList.add('hidden');
+    // Clear bottom practico to avoid duplicate IDs
+    document.getElementById('practicoContainer').innerHTML = '';
+    // Render practico in questionsContainer
+    const container = document.getElementById('questionsContainer');
+    const p = practico;
+    if (!p) { container.innerHTML = '<p style="color:var(--text-secondary);">Sin factor práctico disponible.</p>'; return; }
+    var h = '<div class="practico-section" style="margin-top:0;">' +
+      '<h2>Factor Práctico: ' + escHtml(p.titulo) + '</h2>' +
+      '<div style="font-size:0.8em;color:var(--text-secondary);margin-bottom:8px;">' + escHtml(p.id) + ' &mdash; Apéndice II</div>' +
+      '<div class="scenario"><strong>Escenario:</strong> ' + escHtml(p.escenario) + '</div>' +
+      '<div style="margin-top:12px;"><strong>Preguntas del práctico:</strong></div>';
+    (p.preguntas || []).forEach(function(pq, pi) {
+      var saved = respuestasPractico[pi] !== undefined;
+      var selVal = respuestasPractico[pi];
+      var correcta = saved && selVal === pq.correct;
+      var cls = saved ? (correcta ? 'correct' : 'wrong') : 'unanswered';
+      h += '<div class="question ' + cls + '" id="pq-' + pi + '">' +
+        '<div class="q-text">P' + (pi+1) + '. ' + escHtml(pq.text) + '</div>' +
+        '<div class="q-opts">';
+      pq.opts.forEach(function(opt, oi) {
+        var checked = saved && selVal === oi;
+        var disabled = saved ? ' disabled' : '';
+        var optCls = '';
+        if (saved) {
+          if (oi === selVal && correcta) optCls = ' correct-opt';
+          else if (oi === selVal && !correcta) optCls = ' wrong-opt';
+          else if (oi === pq.correct) optCls = ' correct-opt';
+        }
+        h += '<label id="plbl-' + pi + '-' + oi + '" class="' + (saved ? 'disabled-label' : '') + optCls + '"><input type="radio" name="pq' + pi + '" value="' + oi + '" onchange="onSelectPractico(' + pi + ',' + oi + ')"' + (checked ? ' checked' : '') + disabled + '> ' + escHtml(opt) + '</label>';
+      });
+      var fbCls = saved ? (correcta ? 'feedback-correct' : 'feedback-wrong') : '';
+      var fbText = saved ? (correcta ? 'Correcto' : 'Incorrecto - La respuesta correcta es: <strong>' + escHtml(pq.opts[pq.correct]) + '</strong>') : '';
+      h += '<div id="pfb-' + pi + '" class="feedback-inline ' + fbCls + '">' + fbText + '</div></div></div>';
+    });
+    h += '<div style="text-align:right;margin-top:10px;font-size:0.85em;color:var(--text-secondary);">Puntaje práctico: <span id="practicoScore">' + Object.keys(respuestasPractico).filter(function(k) { return respuestasPractico[k] === practico.preguntas[k].correct; }).length + '/' + (p.preguntas||[]).length + '</span></div>';
+    h += '</div>';
+    container.innerHTML = h;
+  } else {
+    vista = 'teoria';
+    document.getElementById('btnToggleVista').textContent = '📋 Práctico';
+    mostrarPregunta();
+  }
+}
+
+function mostrarPregunta() {
+  const container = document.getElementById('questionsContainer');
+  const info = document.getElementById('countInfo');
+  const total = questions.length;
+
+  if (modo === 'examen') {
+    info.textContent = '250 en banco - 100 por intento';
+  } else {
+    info.textContent = 'Repaso - ' + total + ' preguntas';
+  }
+  updateAnsweredInfo();
+
+  // If all questions answered, show done screen
+  if (qActual >= total) {
+    finalizarExamen();
+    container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-secondary);"><strong>Todas las preguntas respondidas</strong><br><span style="font-size:0.85em;">Ahora completa el factor práctico abajo y luego presiona "Corregir Práctico"</span></div>';
+    document.getElementById('progressWrap').classList.add('hidden');
+    renderPractico();
+    document.getElementById('btnCorregir').scrollIntoView({behavior:'smooth'});
+    return;
+  }
+
+  const q = questions[qActual];
+  const areaColor = AREA_COLORS[q.area] || '#666';
+  const areaName = AREA_NAMES[q.area] || q.area;
+  var respondida = respuestas[qActual];
+
+  document.getElementById('progressWrap').classList.remove('hidden');
+
+  let html = '<div class="question ' + (respondida ? (respondida.correct ? 'correct' : 'wrong') : 'unanswered') + '" id="q-' + qActual + '">' +
+    '<div class="q-area"><span class="badge" style="background:' + areaColor + '">' + q.area + '</span> ' + areaName + '</div>' +
+    '<div class="q-text">' + escHtml(q.text) + '</div>' +
+    '<div class="q-opts">';
+
+  q.opts.forEach(function(opt, oi) {
+    var checked = respondida && respondida.selected === oi ? ' checked' : '';
+    var disabled = respondida ? ' disabled' : '';
+    var cls = '';
+    if (respondida) {
+      if (oi === respondida.selected && respondida.correct) cls = ' correct-opt';
+      else if (oi === respondida.selected && !respondida.correct) cls = ' wrong-opt';
+      else if (oi === q.correct) cls = ' correct-opt';
+    }
+    html += '<label id="lbl-' + qActual + '-' + oi + '" class="' + (respondida ? 'disabled-label' : '') + cls + '"><input type="radio" name="q' + qActual + '" value="' + oi + '" onchange="onSelect(' + qActual + ',' + oi + ')"' + checked + disabled + '> ' + escHtml(opt) + '</label>';
+  });
+
+  if (respondida) {
+    html += '<div id="fb-' + qActual + '" class="feedback-inline ' + (respondida.correct ? 'feedback-correct' : 'feedback-wrong') + '">';
+    if (respondida.correct) {
+      html += 'Correcto';
+    } else {
+      html += 'Incorrecto - La respuesta correcta es: <strong>' + escHtml(q.opts[q.correct]) + '</strong>';
+    }
+    html += '</div>';
+  } else {
+    html += '<div id="fb-' + qActual + '" class="feedback-inline"></div>';
+  }
+  html += '</div>'; // close q-opts
+  // Nav inside the card
+  html += '<div class="q-nav">' +
+    '<button onclick="anteriorQuestion()" class="nav-btn"' + (qActual === 0 ? ' disabled' : '') + '>◀ Anterior</button>' +
+    '<span class="nav-counter">' + (qActual + 1) + ' de ' + total + '</span>' +
+    '<button onclick="siguienteQuestion()" class="nav-btn nav-btn-primary"' + (!respuestas[qActual] ? ' disabled' : '') + '>' + (qActual === total - 1 ? 'Finalizar ▶' : 'Siguiente ▶') + '</button>' +
+  '</div>';
+  html += '</div>'; // close question
+  container.innerHTML = html;
+
+
+
+  // Update progress
+  actualizarProgreso();
+}
+
+function escHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function onSelect(idx, selected) {
+  const q = questions[idx];
+  const correct = selected === q.correct;
+  respuestas[idx] = { selected: selected, correct: correct };
+
+  // Update the DOM for current question
+  const div = document.getElementById('q-' + idx);
+  const opts = div.querySelectorAll('.q-opts label');
+  const radios = div.querySelectorAll('input[type="radio"]');
+  radios.forEach(function(r) { r.disabled = true; });
+  opts.forEach(function(l) { l.classList.add('disabled-label'); });
+
+  opts[selected].classList.add(correct ? 'correct-opt' : 'wrong-opt');
+  if (!correct) opts[q.correct].classList.add('correct-opt');
+  div.className = 'question ' + (correct ? 'correct' : 'wrong');
+
+  const fb = document.getElementById('fb-' + idx);
+  if (correct) {
+    fb.textContent = 'Correcto';
+    fb.className = 'feedback-inline feedback-correct';
+  } else {
+    fb.innerHTML = 'Incorrecto - La respuesta correcta es: <strong>' + escHtml(q.opts[q.correct]) + '</strong>';
+    fb.className = 'feedback-inline feedback-wrong';
+  }
+
+  // Enable Siguiente button inside current question nav
+  var navBtn = document.querySelector('#q-' + idx + ' .q-nav .nav-btn-primary');
+  if (navBtn) navBtn.disabled = false;
+  updateAnsweredInfo();
+  actualizarProgreso();
+}
+
+function updateAnsweredInfo() {
+  let answered = 0;
+  let correct = 0;
+  Object.keys(respuestas).forEach(function(idx) {
+    answered++;
+    if (respuestas[idx].correct) correct++;
+  });
+  document.getElementById('answeredInfo').textContent = answered + ' respondidas / ' + correct + ' acertadas';
+}
+
+function siguienteQuestion() {
+  if (qActual < questions.length - 1) {
+    qActual++;
+    mostrarPregunta();
+  } else if (qActual === questions.length - 1) {
+    qActual = questions.length;
+    mostrarPregunta();
+  }
+}
+
+function anteriorQuestion() {
+  if (qActual > 0) {
+    qActual--;
+    mostrarPregunta();
+  }
+}
+
+function actualizarProgreso() {
+  var total = questions.length;
+  var respondidas = Object.keys(respuestas).length;
+  var pct = total > 0 ? Math.round((respondidas / total) * 100) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = respondidas + '/' + total;
+}
+
+function renderPractico() {
+  const container = document.getElementById('practicoContainer');
+  if (!practico) { container.innerHTML = ''; return; }
+  const preguntas = practico.preguntas || [];
+  var titId = practico.id;
+  var titulo = practico.titulo;
+  var escenario = practico.escenario;
+  let html = '<div class="practico-section">' +
+    '<h2>Factor Practico: ' + escHtml(titulo) + '</h2>' +
+    '<div style="font-size:0.8em;color:var(--text-secondary);margin-bottom:8px;">' + escHtml(titId) + ' &mdash; Apendice II</div>' +
+    '<div class="scenario"><strong>Escenario:</strong> ' + escHtml(escenario) + '</div>' +
+    '<div style="margin-top:12px;"><strong>Preguntas del practico:</strong></div>';
+  preguntas.forEach(function(pq, pi) {
+    var saved = respuestasPractico[pi] !== undefined;
+    var selVal = respuestasPractico[pi];
+    var correcta = saved && selVal === pq.correct;
+    var cls = saved ? (correcta ? 'correct' : 'wrong') : 'unanswered';
+    html += '<div class="question ' + cls + '" id="pq-' + pi + '">' +
+      '<div class="q-text">P' + (pi+1) + '. ' + escHtml(pq.text) + '</div>' +
+      '<div class="q-opts">';
+    pq.opts.forEach(function(opt, oi) {
+      var checked = saved && selVal === oi;
+      var disabled = saved ? ' disabled' : '';
+      var optCls = '';
+      if (saved) {
+        if (oi === selVal && correcta) optCls = ' correct-opt';
+        else if (oi === selVal && !correcta) optCls = ' wrong-opt';
+        else if (oi === pq.correct) optCls = ' correct-opt';
+      }
+      html += '<label id="plbl-' + pi + '-' + oi + '" class="' + (saved ? 'disabled-label' : '') + optCls + '"><input type="radio" name="pq' + pi + '" value="' + oi + '" onchange="onSelectPractico(' + pi + ',' + oi + ')"' + (checked ? ' checked' : '') + disabled + '> ' + escHtml(opt) + '</label>';
+    });
+    var fbCls = saved ? (correcta ? 'feedback-correct' : 'feedback-wrong') : '';
+    var fbText = saved ? (correcta ? 'Correcto' : 'Incorrecto - La respuesta correcta es: <strong>' + escHtml(pq.opts[pq.correct]) + '</strong>') : '';
+    html += '<div id="pfb-' + pi + '" class="feedback-inline ' + fbCls + '">' + fbText + '</div></div></div>';
+  });
+  var correctasP = Object.keys(respuestasPractico).filter(function(k) { return respuestasPractico[k] === (practico.preguntas||[])[k].correct; }).length;
+  html += '<div style="text-align:right;margin-top:10px;font-size:0.85em;color:var(--text-secondary);">Puntaje practico: <span id="practicoScore">' + correctasP + '/' + preguntas.length + '</span></div>';
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+
+function abrirPractico() {
+  var container = document.getElementById('practicoContainer');
+  if (!container.innerHTML.trim()) {
+    renderPractico();
+  }
+  container.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function onSelectPractico(pi, selected) {
+  respuestasPractico[pi] = selected;
+  const pq = practico.preguntas[pi];
+  const div = document.getElementById('pq-' + pi);
+  const opts = div.querySelectorAll('.q-opts label');
+  const radios = div.querySelectorAll('input[type="radio"]');
+  radios.forEach(function(r) { r.disabled = true; });
+  opts.forEach(function(l) { l.classList.add('disabled-label'); });
+  const fb = document.getElementById('pfb-' + pi);
+  if (selected === pq.correct) {
+    opts[selected].classList.add('correct-opt');
+    div.className = 'question correct';
+    fb.textContent = 'Correcto';
+    fb.className = 'feedback-inline feedback-correct';
+  } else {
+    opts[selected].classList.add('wrong-opt');
+    opts[pq.correct].classList.add('correct-opt');
+    div.className = 'question wrong';
+    fb.innerHTML = 'Incorrecto - La respuesta correcta es: <strong>' + escHtml(pq.opts[pq.correct]) + '</strong>';
+    fb.className = 'feedback-inline feedback-wrong';
+  }
+  actualizarPuntajePractico();
+}
+
+function actualizarPuntajePractico() {
+  if (!practico || !practico.preguntas) return;
+  let correctas = 0;
+  practico.preguntas.forEach(function(pq, pi) {
+    if (respuestasPractico[pi] !== undefined && respuestasPractico[pi] === pq.correct) correctas++;
+  });
+  document.getElementById('practicoScore').textContent = correctas + '/' + practico.preguntas.length;
+}
+
+function corregirPractico() {
+  if (!practico || !practico.preguntas) return { correctas: 0, total: 0 };
+  let correctas = 0;
+  practico.preguntas.forEach(function(pq, pi) {
+    if (respuestasPractico[pi] !== undefined && respuestasPractico[pi] === pq.correct) correctas++;
+  });
+  return { correctas: correctas, total: practico.preguntas.length };
+}
+
+function corregirTeoria() {
+  if (examenEnCurso) return;
+  var totalQs = questions.length;
+  var respondidas = Object.keys(respuestas).length;
+  var correctas = 0;
+  Object.keys(respuestas).forEach(function(idx) {
+    if (respuestas[idx].correct) correctas++;
+  });
+  var pct = totalQs > 0 ? Math.round((correctas / totalQs) * 100) : 0;
+  var aprueba = modo === 'examen' ? pct >= 70 : false;
+  var resultDiv = document.getElementById('resultContainer');
+
+  var areaBreakdown = Object.keys(AREA_NAMES).map(function(a) {
+    var total = questions.filter(function(q) { return q.area === a; }).length;
+    if (total === 0) return '';
+    var bien = 0;
+    questions.forEach(function(q, i) {
+      if (q.area !== a) return;
+      if (respuestas[i] && respuestas[i].correct) bien++;
+    });
+    return '<span style="white-space:nowrap">' + AREA_NAMES[a] + ': ' + bien + '/' + total + '</span>';
+  }).filter(Boolean).join(' / ');
+
+  resultDiv.className = 'result';
+  var resultadoTitulo = modo === 'examen' ? (aprueba ? 'APROBADO' : 'NO APROBADO') : 'RESULTADO DEL REPASO';
+  resultDiv.innerHTML =
+    '<h2 style="color:' + (aprueba ? '#27ae60' : '#e74c3c') + ';">' + resultadoTitulo + '</h2>' +
+    '<div class="score">' + correctas + ' / ' + totalQs + '</div>' +
+    '<div class="detail">' + pct + (modo === 'examen' ? '% &bull; Mínimo: 70% (' + Math.ceil(totalQs*0.7) + ')' : '%') + '</div>' +
+    '<div class="detail">' + respondidas + ' respondidas &bull; ' + (questions.length - respondidas) + ' sin responder</div>' +
+    '<div class="detail" style="margin-top:12px">' + areaBreakdown + '</div>';
+  document.getElementById('scrollArea').scrollTop = 0;
+}
+
+function corregirPracticoVisible() {
+  if (examenEnCurso) return;
+  if (!practicoAccedido) {
+    toast('Primero accedé a la vista Práctico (📋 Práctico) para responder el factor práctico.', 'warning');
+    return;
+  }
+  var pc = corregirPractico();
+  var resultDiv = document.getElementById('resultPracticoContainer');
+  if (!pc || pc.total === 0) {
+    resultDiv.className = 'result';
+    resultDiv.innerHTML = '<div class="detail" style="color:var(--text-secondary);">No hay factor práctico disponible.</div>';
+    document.getElementById('scrollArea').scrollTop = 0;
+    return;
+  }
+  var pct = Math.round((pc.correctas / pc.total) * 100);
+  resultDiv.className = 'result';
+  resultDiv.innerHTML =
+    '<h2 style="color:var(--practico-border);">FACTOR PRÁCTICO</h2>' +
+    '<div style="font-size:0.85em;color:var(--text-secondary);margin-bottom:8px;">' + escHtml(practico.id) + ' &mdash; ' + escHtml(practico.titulo) + '</div>' +
+    '<div class="score">' + pc.correctas + ' / ' + pc.total + '</div>' +
+    '<div class="detail">' + pct + '%</div>';
+  document.getElementById('scrollArea').scrollTop = 0;
+}
+
+initAccionBotones();
+loadTheme();
+iniciar();
+
+// ── Toast system ──
+function toast(msg, type) {
+  var container = document.getElementById('toastContainer');
+  if (!container) return;
+  var el = document.createElement('div');
+  el.textContent = msg;
+  el.className = 'toast toast-' + (type || 'info');
+  container.appendChild(el);
+  setTimeout(function() {
+    el.classList.add('toast-hide');
+    setTimeout(function() { el.remove(); }, 300);
+  }, 3500);
+}
+
+// ── Keyboard navigation ──
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowLeft') {
+    e.preventDefault();
+    var btn = document.querySelector('.q-nav .nav-btn:first-child');
+    if (btn && !btn.disabled) anteriorQuestion();
+  } else if (e.key === 'ArrowRight') {
+    e.preventDefault();
+    var btn = document.querySelector('.q-nav .nav-btn-primary');
+    if (btn && !btn.disabled) siguienteQuestion();
+  }
+});
+
+// ── Enhance mostrarPregunta with smooth scroll ──
+var _origMostrar = mostrarPregunta;
+mostrarPregunta = function() {
+  _origMostrar.call(this);
+  var sa = document.getElementById('scrollArea');
+  if (sa) sa.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+// ── Enhance onSelect with animation ──
+var _origOnSelect = onSelect;
+onSelect = function(idx, selected) {
+  _origOnSelect.call(this, idx, selected);
+  var label = document.getElementById('lbl-' + idx + '-' + selected);
+  if (label) {
+    label.style.animation = 'none';
+    void label.offsetHeight;
+    label.style.animation = 'selectPulse 0.3s ease';
+  }
+};
+</script>
+</body>
+
+
+</html>
+
