@@ -1372,13 +1372,19 @@ function tourMostrarPaso(paso) {
   document.getElementById('tourNext').classList.toggle('hidden', paso === tourPasos.length - 1);
   document.getElementById('tourFinish').classList.toggle('hidden', paso !== tourPasos.length - 1);
 
+  // Remove hidden BEFORE measuring (offsetHeight needs layout)
+  document.getElementById('tourTooltip').classList.remove('hidden');
+
   // Position spotlight and tooltip
   tourPosicionar(el);
 
-  // Show
+  // Show overlay and animate tooltip
   document.getElementById('tourOverlay').classList.remove('hidden');
-  document.getElementById('tourTooltip').classList.remove('hidden');
-  setTimeout(function() { document.getElementById('tourTooltip').classList.add('show'); }, 50);
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      document.getElementById('tourTooltip').classList.add('show');
+    });
+  });
 }
 
 function tourPosicionar(el) {
