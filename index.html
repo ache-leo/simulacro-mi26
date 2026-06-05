@@ -329,6 +329,57 @@ body {
 .result .detail { font-size: 0.82em; color: var(--text-secondary); margin-top: 8px; line-height: 1.5; }
 #resultContainer, #resultPracticoContainer { flex-shrink: 0; }
 
+/* ── Welcome screen ── */
+#welcomeScreen {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; gap: 24px; padding: 40px 20px;
+}
+#welcomeScreen h2 {
+  font-size: 1.6em; font-weight: 800; color: var(--accent);
+  letter-spacing: -0.02em;
+}
+#welcomeScreen p {
+  color: var(--text-secondary); font-size: 0.9em; max-width: 400px;
+  line-height: 1.5;
+}
+.welcome-cards {
+  display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+  width: 100%; max-width: 500px;
+}
+.welcome-card {
+  flex: 1; min-width: 200px; padding: 24px 20px;
+  background: var(--card); border: 1.5px solid var(--unanswered-border);
+  border-radius: var(--radius); cursor: pointer;
+  box-shadow: var(--shadow); transition: all 0.2s;
+  text-decoration: none; color: inherit;
+}
+.welcome-card:hover {
+  border-color: var(--accent-border); box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+.welcome-card:active { transform: translateY(0); }
+.welcome-card .icon { font-size: 2.2em; margin-bottom: 12px; display: block; }
+.welcome-card h3 { font-size: 1.1em; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.welcome-card p { font-size: 0.8em; color: var(--text-secondary); line-height: 1.4; }
+.welcome-footer {
+  color: var(--text-secondary); font-size: 0.75em;
+  display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+}
+@media (max-width: 640px) {
+  #welcomeScreen { padding: 24px 16px; gap: 18px; }
+  #welcomeScreen h2 { font-size: 1.3em; }
+  .welcome-card { min-width: 160px; padding: 18px 16px; }
+  .welcome-card .icon { font-size: 1.8em; }
+  .welcome-card h3 { font-size: 1em; }
+}
+@media (max-width: 400px) {
+  #welcomeScreen { padding: 16px 12px; gap: 14px; }
+  #welcomeScreen h2 { font-size: 1.1em; }
+  .welcome-cards { flex-direction: column; }
+  .welcome-card { min-width: 0; }
+}
+
 /* ── Toast notifications ── */
 #toastContainer {
   position: fixed;
@@ -478,7 +529,31 @@ body {
     <div id="areaPills"></div>
   </div>
 
-  <div id="scrollArea">
+  <div id="welcomeScreen">
+    <h2>Simulacro MI-26</h2>
+    <p>Preparate para el ascenso a Sub-Oficial de 2da. Elegí el modo de estudio:</p>
+    <div class="welcome-cards">
+      <div class="welcome-card" id="btnWelcomeTeoria">
+        <span class="icon">📝</span>
+        <h3>Simulacro Teoría</h3>
+        <p>Examen cronometrado o repaso por área temática. 362 preguntas en banco.</p>
+      </div>
+      <div class="welcome-card" id="btnWelcomePractico">
+        <span class="icon">📋</span>
+        <h3>Factor Práctico</h3>
+        <p>Ejercicios situacionales basados en el Apéndice II del manual MI-26.</p>
+      </div>
+    </div>
+    <div class="welcome-footer">
+      <span>362 preguntas teóricas</span>
+      <span>·</span>
+      <span>15 factores prácticos</span>
+      <span>·</span>
+      <span>11 áreas temáticas</span>
+    </div>
+  </div>
+
+  <div id="scrollArea" class="hidden">
     <div id="questionsContainer"></div>
     <div id="practicoContainer"></div>
   </div>
@@ -642,6 +717,8 @@ function cancelarExamen() {
   document.getElementById('resultPracticoContainer').classList.add('hidden');
   var respondidas = Object.keys(respuestas).length;
   document.getElementById('countInfo').textContent = 'Examen suspendido — ' + respondidas + ' respondidas';
+  document.getElementById('scrollArea').classList.add('hidden');
+  document.getElementById('welcomeScreen').classList.remove('hidden');
 }
 
 function iniciarTimer(segundos) {
@@ -734,6 +811,7 @@ function iniciar() {
 
 function toggleVista() {
   if (examenEnCurso) return;
+  hideWelcome();
   if (vista === 'teoria') {
     practicoAccedido = true;
     vista = 'practico';
@@ -779,11 +857,17 @@ function toggleVista() {
   } else {
     vista = 'teoria';
     document.getElementById('btnToggleVista').textContent = '📋 Práctico';
+    if (questions.length === 0) {
+      document.getElementById('scrollArea').classList.add('hidden');
+      document.getElementById('welcomeScreen').classList.remove('hidden');
+      return;
+    }
     mostrarPregunta();
   }
 }
 
 function mostrarPregunta() {
+  hideWelcome();
   const container = document.getElementById('questionsContainer');
   const info = document.getElementById('countInfo');
   const total = questions.length;
@@ -1081,7 +1165,28 @@ function corregirPracticoVisible() {
 
 initAccionBotones();
 loadTheme();
-iniciar();
+
+// ── Welcome screen handlers ──
+function hideWelcome() {
+  document.getElementById('welcomeScreen').classList.add('hidden');
+  document.getElementById('scrollArea').classList.remove('hidden');
+}
+function ocultarInfoExamen() {
+  document.getElementById('timerDisplay').classList.add('hidden');
+  document.getElementById('btnPausar').classList.add('hidden');
+  document.getElementById('progressWrap').classList.add('hidden');
+  document.getElementById('countInfo').textContent = 'Factor Práctico';
+}
+document.getElementById('btnWelcomeTeoria').addEventListener('click', function() {
+  hideWelcome();
+  iniciar();
+});
+document.getElementById('btnWelcomePractico').addEventListener('click', function() {
+  if (!practico) practico = PRACTICOS[Math.floor(Math.random() * PRACTICOS.length)];
+  practicoAccedido = true;
+  ocultarInfoExamen();
+  toggleVista();
+});
 
 // ── Toast system ──
 function toast(msg, type) {
